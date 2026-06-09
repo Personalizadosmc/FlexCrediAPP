@@ -1,0 +1,220 @@
+<ion-content class="np-content" [fullscreen]="true">
+  <div class="np-header">
+    <div class="nh-inner">
+      <button class="back-btn ion-activatable" (click)="goBack()">
+        <ion-ripple-effect></ion-ripple-effect><ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <div class="nh-txt">
+        <h2 class="nh-title">Nuevo Préstamo</h2>
+        <p class="nh-sub">Complete todos los campos</p>
+      </div>
+      <div class="nh-icon"><ion-icon name="calculator-outline"></ion-icon></div>
+    </div>
+  </div>
+
+  <div class="np-body">
+
+    <!-- SIN CLIENTES -->
+    <div class="no-clients" *ngIf="clientes.length===0">
+      <ion-icon name="people-outline" class="nc-icon"></ion-icon>
+      <p class="nc-title">No tienes clientes registrados</p>
+      <p class="nc-sub">Primero debes registrar un cliente para crear un préstamo</p>
+      <button class="btn-go-clients ion-activatable" (click)="goNuevoCliente()">
+        <ion-ripple-effect></ion-ripple-effect>
+        <ion-icon name="person-add-outline"></ion-icon> Registrar Cliente
+      </button>
+    </div>
+
+    <!-- ╔════════════════ SELECCIÓN DE CLIENTE PROFESIONAL ════════════════╗ -->
+    <div class="form-card" *ngIf="clientes.length>0">
+      <div class="card-head">
+        <ion-icon name="person-outline"></ion-icon> Datos del Cliente
+      </div>
+
+      <!-- Estado: SIN selección → botón para abrir el selector -->
+      <button
+        *ngIf="!clienteSel"
+        type="button"
+        class="cli-picker-btn ion-activatable"
+        (click)="abrirSelector()">
+        <ion-ripple-effect></ion-ripple-effect>
+        <div class="cp-icon"><ion-icon name="person-add-outline"></ion-icon></div>
+        <div class="cp-text">
+          <p class="cp-t1">Seleccionar Cliente</p>
+          <p class="cp-t2">Toca para ver los {{clientes.length}} clientes</p>
+        </div>
+        <ion-icon name="chevron-forward-outline" class="cp-arr"></ion-icon>
+      </button>
+
+      <!-- Estado: CON selección → preview elegante -->
+      <div *ngIf="clienteSel" class="cli-selected-card">
+        <div class="csc-av" [style.background]="data.getAvatarColor(clienteSel.nombre)">
+          {{clienteIni}}
+        </div>
+        <div class="csc-info">
+          <p class="csc-name">{{clienteSel.nombre}}</p>
+          <p class="csc-detail">
+            <ion-icon name="call-outline"></ion-icon> {{clienteSel.telefono}}
+          </p>
+          <p class="csc-detail" *ngIf="clienteSel.cedula">
+            <ion-icon name="card-outline"></ion-icon> {{clienteSel.cedula}}
+          </p>
+        </div>
+        <button class="csc-change ion-activatable" type="button" (click)="abrirSelector()">
+          <ion-ripple-effect></ion-ripple-effect>
+          <ion-icon name="swap-horizontal-outline"></ion-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- CARD CONDICIONES -->
+    <div class="form-card" *ngIf="clientes.length>0">
+      <div class="card-head"><ion-icon name="cash-outline"></ion-icon> Condiciones del Crédito</div>
+
+      <div class="field"><label>MONTO A PRESTAR *</label>
+        <div class="inp-box prefix">
+          <span class="pre-txt">RD$</span>
+          <ion-input type="number" placeholder="0.00" inputmode="decimal" [formControl]="getCtrl('monto')" class="fc-inp"></ion-input>
+        </div>
+      </div>
+
+      <div class="field"><label>TASA DE INTERÉS (%)</label>
+        <div class="inp-box suffix">
+          <ion-input type="number" inputmode="decimal" [formControl]="getCtrl('interes')" class="fc-inp"></ion-input>
+          <span class="suf-txt">% mensual</span>
+        </div>
+      </div>
+
+      <div class="field"><label>FRECUENCIA DE PAGO *</label>
+        <div class="freq-row">
+          <button type="button" class="fchip ion-activatable" [class.on]="frecuencia==='semanal'" (click)="setFrecuencia('semanal')">
+            <ion-ripple-effect></ion-ripple-effect>Semanal
+          </button>
+          <button type="button" class="fchip ion-activatable" [class.on]="frecuencia==='quincenal'" (click)="setFrecuencia('quincenal')">
+            <ion-ripple-effect></ion-ripple-effect>Quincenal
+          </button>
+          <button type="button" class="fchip ion-activatable" [class.on]="frecuencia==='mensual'" (click)="setFrecuencia('mensual')">
+            <ion-ripple-effect></ion-ripple-effect>Mensual
+          </button>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="field"><label>N° CUOTAS *</label>
+          <div class="inp-box">
+            <ion-input type="number" inputmode="numeric" [formControl]="getCtrl('numeroCuotas')" class="fc-inp"></ion-input>
+          </div>
+        </div>
+        <div class="field"><label>PRIMER PAGO *</label>
+          <div class="inp-box">
+            <ion-icon name="calendar-outline" class="ico-pre"></ion-icon>
+            <ion-input type="date" [formControl]="getCtrl('fechaPrimerPago')" [min]="minDate" class="fc-inp"></ion-input>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESUMEN -->
+    <div class="resumen-card" *ngIf="resumen.totalPagar>0">
+      <div class="rc-title"><ion-icon name="calculator-outline"></ion-icon> Resumen del Crédito</div>
+      <div class="rc-row"><span class="rk">Capital prestado</span><span class="rv">{{data.formatMoney(form.value.monto||0)}}</span></div>
+      <div class="rc-row"><span class="rk">Interés ({{form.value.interes}}%)</span><span class="rv">{{data.formatMoney(resumen.interesTotal)}}</span></div>
+      <div class="rc-row"><span class="rk">Total a recuperar</span><span class="rv">{{data.formatMoney(resumen.totalPagar)}}</span></div>
+      <div class="rc-divider"></div>
+      <div class="rc-row total"><span class="rk">Cuota {{frecuencia}}</span><span class="rv">{{data.formatMoney(resumen.cuotaMonto)}}</span></div>
+    </div>
+
+    <div style="height:90px"></div>
+  </div>
+</ion-content>
+
+<div class="np-footer">
+  <button class="btn-confirm ion-activatable" (click)="confirmar()" [disabled]="clientes.length===0">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="checkmark-circle-outline"></ion-icon> Confirmar Préstamo
+  </button>
+</div>
+
+<!-- ╔════════════════ MODAL SELECCIÓN CLIENTE ════════════════╗ -->
+<ion-modal [isOpen]="selectorOpen" (didDismiss)="cerrarSelector()" [breakpoints]="[0,1]" [initialBreakpoint]="1" class="cli-modal">
+  <ng-template>
+    <div class="modal-wrap">
+
+      <div class="modal-handle"></div>
+
+      <div class="modal-head">
+        <div>
+          <h3 class="mh-title">Seleccionar Cliente</h3>
+          <p class="mh-sub">{{clientes.length}} clientes registrados</p>
+        </div>
+        <button class="mh-close ion-activatable" (click)="cerrarSelector()">
+          <ion-ripple-effect></ion-ripple-effect>
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+
+      <div class="modal-search">
+        <ion-icon name="search-outline"></ion-icon>
+        <ion-input
+          placeholder="Buscar por nombre, cédula o teléfono..."
+          [(ngModel)]="busquedaCliente"
+          (ionInput)="filtrarClientes()"
+          class="ms-inp">
+        </ion-input>
+        <ion-icon
+          *ngIf="busquedaCliente"
+          name="close-circle"
+          class="ms-clear"
+          (click)="limpiarBusqueda()">
+        </ion-icon>
+      </div>
+
+      <div class="modal-list">
+        <div class="ml-empty" *ngIf="clientesFiltrados.length===0">
+          <ion-icon name="search-outline"></ion-icon>
+          <p>No se encontraron clientes</p>
+        </div>
+
+        <button
+          *ngFor="let c of clientesFiltrados; let i=index"
+          class="ml-card ion-activatable"
+          [class.on]="clienteSel?.id===c.id"
+          (click)="seleccionarCliente(c)"
+          [style.animation-delay]="(i*.04)+'s'">
+          <ion-ripple-effect></ion-ripple-effect>
+          <div class="ml-av" [style.background]="data.getAvatarColor(c.nombre)">
+            {{data.getIniciales(c.nombre)}}
+          </div>
+          <div class="ml-info">
+            <p class="ml-name">{{c.nombre}}</p>
+            <p class="ml-meta">
+              <ion-icon name="call-outline"></ion-icon> {{c.telefono}}
+            </p>
+            <p class="ml-meta" *ngIf="c.cedula">
+              <ion-icon name="card-outline"></ion-icon> {{c.cedula}}
+            </p>
+          </div>
+          <ion-icon
+            *ngIf="clienteSel?.id===c.id"
+            name="checkmark-circle"
+            class="ml-check">
+          </ion-icon>
+          <ion-icon
+            *ngIf="clienteSel?.id!==c.id"
+            name="chevron-forward-outline"
+            class="ml-arr">
+          </ion-icon>
+        </button>
+      </div>
+
+      <div class="modal-foot">
+        <button class="mf-new ion-activatable" (click)="cerrarSelectorYNuevoCliente()">
+          <ion-ripple-effect></ion-ripple-effect>
+          <ion-icon name="person-add-outline"></ion-icon>
+          Registrar nuevo cliente
+        </button>
+      </div>
+
+    </div>
+  </ng-template>
+</ion-modal>

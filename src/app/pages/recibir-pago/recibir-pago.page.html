@@ -1,0 +1,93 @@
+<ion-content class="rp-content" [fullscreen]="true">
+  <div class="rp-header">
+    <div class="rh-inner">
+      <button class="back-btn ion-activatable" (click)="goBack()">
+        <ion-ripple-effect></ion-ripple-effect><ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <div><h2 class="rh-title">Recibir Pago</h2><p class="rh-sub">Selecciona el cliente a cobrar</p></div>
+      <div class="rh-ico-badge"><ion-icon name="card-outline"></ion-icon></div>
+    </div>
+    <div class="search-bar">
+      <ion-icon name="search-outline"></ion-icon>
+      <ion-input placeholder="Buscar cliente..." [(ngModel)]="busqueda" (ionInput)="filtrar()" class="sr-inp"></ion-input>
+    </div>
+  </div>
+
+  <div class="rp-body">
+    <div class="stats-row">
+      <div class="stat-chip blue"><span class="sc-n">{{filtrados.length}}</span><span class="sc-l">Activos</span></div>
+      <div class="stat-chip red"><span class="sc-n">{{getAtrasados()}}</span><span class="sc-l">Con atrasos</span></div>
+    </div>
+
+    <p class="list-lbl">Préstamos activos</p>
+
+    <!-- VACÍO -->
+    <div class="empty-wrap" *ngIf="prestamos.length===0">
+      <ion-icon name="hand-right-outline"></ion-icon>
+      <p>No hay préstamos activos</p>
+      <button class="empty-btn ion-activatable" (click)="goBack()">
+        <ion-ripple-effect></ion-ripple-effect>Ir al Dashboard
+      </button>
+    </div>
+
+    <!-- LISTA -->
+    <div class="client-list">
+      <div class="client-card ion-activatable" *ngFor="let p of filtrados; let i=index"
+        [class.selected]="prestamoSel?.id===p.id"
+        [class.atrasado-card]="p.estado==='atrasado'"
+        (click)="seleccionar(p)" [style.animation-delay]="(i*.06)+'s'">
+        <ion-ripple-effect></ion-ripple-effect>
+        <div class="cc-av" [style.background]="data.getAvatarColor(p.clienteNombre)">
+          {{data.getIniciales(p.clienteNombre)}}
+        </div>
+        <div class="cc-info">
+          <p class="cc-name">{{p.clienteNombre}}</p>
+          <p class="cc-sub">{{p.frecuencia | titlecase}} · {{getCuotasPag(p)}}/{{p.numeroCuotas}} cuotas</p>
+          <div class="cc-prog"><div class="cc-fill" [style.width]="getPct(p)+'%'" [class.red]="p.estado==='atrasado'"></div></div>
+        </div>
+        <div class="cc-right">
+          <p class="cc-amt" [class.danger]="p.estado==='atrasado'">{{data.formatMoney(p.cuotaMonto)}}</p>
+          <span class="cc-badge" [style.color]="estadoColor(p.estado)" [style.background]="estadoBg(p.estado)">{{estadoLabel(p.estado)}}</span>
+        </div>
+        <ion-icon name="checkmark-circle" class="cc-check" *ngIf="prestamoSel?.id===p.id"></ion-icon>
+        <ion-icon name="chevron-forward-outline" class="cc-arr" *ngIf="prestamoSel?.id!==p.id"></ion-icon>
+      </div>
+    </div>
+
+    <!-- CUOTA SELECCIONADA -->
+    <div class="cuota-panel" *ngIf="prestamoSel && cuotaSel">
+      <div class="cp-head">
+        <div>
+          <p class="cp-eyebrow">CUOTA A COBRAR</p>
+          <p class="cp-sub">Cuota #{{cuotaSel.numero}} de {{prestamoSel.numeroCuotas}} · {{prestamoSel.clienteNombre}}</p>
+        </div>
+        <div class="cp-ok"><ion-icon name="checkmark-outline"></ion-icon></div>
+      </div>
+      <p class="cp-amount">{{data.formatMoney(cuotaSel.monto)}}</p>
+      <p class="cp-date">📅 Vence: {{cuotaSel.fechaVencimiento}}</p>
+      <div class="wa-row">
+        <div class="wa-left">
+          <div class="wa-ico"><ion-icon name="logo-whatsapp"></ion-icon></div>
+          <div><p class="wa-t">Notificar por WhatsApp</p><p class="wa-s">Enviar recibo al cliente</p></div>
+        </div>
+        <ion-toggle [(ngModel)]="notificarWA" class="wa-tog"></ion-toggle>
+      </div>
+    </div>
+
+    <div class="empty-hint" *ngIf="!prestamoSel && prestamos.length>0">
+      <div class="eh-icon">👆</div>
+      <p>Toca un cliente para seleccionarlo</p>
+    </div>
+
+    <div style="height:100px"></div>
+  </div>
+</ion-content>
+
+<div class="rp-footer">
+  <button class="btn-pagar ion-activatable" [class.active]="!!prestamoSel" [disabled]="!prestamoSel" (click)="registrar()">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="card-outline"></ion-icon>
+    <span *ngIf="!prestamoSel">Selecciona un cliente</span>
+    <span *ngIf="prestamoSel && cuotaSel">Registrar Pago — {{data.formatMoney(cuotaSel.monto)}}</span>
+  </button>
+</div>

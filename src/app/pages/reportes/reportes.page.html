@@ -1,0 +1,107 @@
+<ion-content class="rep-content" [fullscreen]="true">
+  <div class="rep-header">
+    <div class="rh-inner">
+      <button class="back-btn ion-activatable" (click)="goBack()">
+        <ion-ripple-effect></ion-ripple-effect><ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <h2 class="rh-title">Reportes</h2>
+    </div>
+    <div class="period-tabs">
+      <button class="ptab ion-activatable" [class.on]="periodo==='semana'" (click)="setPeriodo('semana')">
+        <ion-ripple-effect></ion-ripple-effect>Esta semana
+      </button>
+      <button class="ptab ion-activatable" [class.on]="periodo==='mes'" (click)="setPeriodo('mes')">
+        <ion-ripple-effect></ion-ripple-effect>Este mes
+      </button>
+      <button class="ptab ion-activatable" [class.on]="periodo==='ano'" (click)="setPeriodo('ano')">
+        <ion-ripple-effect></ion-ripple-effect>Este año
+      </button>
+    </div>
+  </div>
+
+  <div class="rep-body">
+    <!-- HERO -->
+    <div class="hero-card">
+      <p class="hc-lbl">COBRADO EN EL PERIODO</p>
+      <p class="hc-val">{{data.formatMoney(cobradoPeriodo)}}</p>
+      <p class="hc-sub" *ngIf="pagos.length>0">{{pagos.length}} pagos registrados en total</p>
+      <p class="hc-sub" *ngIf="pagos.length===0">Sin pagos registrados aún</p>
+    </div>
+
+    <!-- KPI GRID -->
+    <div class="kpi-grid">
+      <div class="kpi-box">
+        <div class="kpi-ico blue"><ion-icon name="trending-up-outline"></ion-icon></div>
+        <p class="kv">{{data.formatMoney(stats.totalCartera||0)}}</p>
+        <p class="kl">Cartera activa</p>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-ico gold"><ion-icon name="people-outline"></ion-icon></div>
+        <p class="kv">{{stats.totalClientes||0}}</p>
+        <p class="kl">Clientes</p>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-ico green"><ion-icon name="checkmark-circle-outline"></ion-icon></div>
+        <p class="kv">{{stats.activos||0}}</p>
+        <p class="kl">Activos</p>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-ico red"><ion-icon name="warning-outline"></ion-icon></div>
+        <p class="kv" [class.red]="(stats.atrasados||0)>0">{{stats.atrasados||0}}</p>
+        <p class="kl">Atrasados</p>
+      </div>
+    </div>
+
+    <!-- GRAFICA BARRAS -->
+    <div class="chart-card">
+      <p class="chart-title">Cobros por día (últimos 7 días)</p>
+      <div class="bars-wrap" *ngIf="pagos.length>0">
+        <div class="bar-col" *ngFor="let b of barras">
+          <div class="bar" [style.height]="b.h+'px'" [class.gold]="b.gold"></div>
+          <span class="bar-lbl">{{b.lbl}}</span>
+        </div>
+      </div>
+      <div class="chart-empty" *ngIf="pagos.length===0">
+        <p>Sin datos aún — registra pagos para ver estadísticas</p>
+      </div>
+    </div>
+
+    <!-- OPERACIONES RECIENTES -->
+    <div class="ops-card">
+      <p class="ops-title">Últimas Operaciones</p>
+      <div class="op-empty" *ngIf="pagos.length===0">
+        <ion-icon name="time-outline"></ion-icon>
+        <p>Sin operaciones registradas</p>
+      </div>
+      <div class="op-item" *ngFor="let p of pagos.slice(0,6)">
+        <div class="op-ico in"><ion-icon name="card-outline"></ion-icon></div>
+        <div class="op-info">
+          <p class="op-name">Pago · {{p.clienteNombre}}</p>
+          <p class="op-date">{{p.fecha | date:'dd/MM/yyyy HH:mm':'':'es'}}</p>
+        </div>
+        <p class="op-amt in">+{{data.formatMoney(p.monto)}}</p>
+      </div>
+    </div>
+
+    <!-- CARTERA POR FRECUENCIA -->
+    <div class="freq-card">
+      <p class="ops-title">Cartera por Frecuencia</p>
+      <div class="freq-row-r">
+        <div class="fr-item">
+          <span class="fr-dot blue"></span><span class="fr-lbl">Semanal</span>
+          <span class="fr-val">{{data.formatMoney(stats.semanal||0)}}</span>
+        </div>
+        <div class="fr-item">
+          <span class="fr-dot gold"></span><span class="fr-lbl">Quincenal</span>
+          <span class="fr-val">{{data.formatMoney(stats.quincenal||0)}}</span>
+        </div>
+        <div class="fr-item">
+          <span class="fr-dot green"></span><span class="fr-lbl">Mensual</span>
+          <span class="fr-val">{{data.formatMoney(stats.mensual||0)}}</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:40px"></div>
+  </div>
+</ion-content>

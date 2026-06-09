@@ -1,0 +1,36 @@
+.rep-content{--background:#eef2ff}
+.rep-header{background:linear-gradient(135deg,#0d2252,#1a56db);padding:0 16px}
+.rh-inner{display:flex;align-items:center;gap:12px;padding-top:52px;padding-bottom:14px}
+.back-btn{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;ion-icon{color:white;font-size:18px}&:active{background:rgba(255,255,255,0.25)}}
+.rh-title{font-family:'Montserrat',sans-serif;font-size:17px;font-weight:900;color:white;margin:0}
+.period-tabs{display:flex;gap:6px;margin-bottom:16px}
+.ptab{flex:1;height:34px;border-radius:9px;border:1px solid rgba(255,255,255,0.1);font-size:10px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;position:relative;overflow:hidden;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);transition:all .2s;&.on{background:linear-gradient(135deg,#d97706,#f59e0b,#fde68a);color:#06102a;border-color:transparent;box-shadow:0 3px 12px rgba(245,158,11,0.45)}}
+.rep-body{padding:14px;display:flex;flex-direction:column;gap:12px}
+.hero-card{background:linear-gradient(135deg,#0d2252,#1340a0);border-radius:18px;padding:18px;box-shadow:0 6px 24px rgba(26,86,219,0.25)}
+.hc-lbl{font-size:9px;font-weight:800;color:rgba(255,255,255,0.45);letter-spacing:1px;text-transform:uppercase;margin:0 0 6px}
+.hc-val{font-family:'Montserrat',sans-serif;font-size:30px;font-weight:900;color:#fcd34d;margin:0}
+.hc-sub{font-size:11px;color:rgba(255,255,255,0.4);margin:6px 0 0}
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kpi-box{background:white;border-radius:14px;padding:14px;box-shadow:0 3px 14px rgba(26,86,219,0.07)}
+.kpi-ico{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;ion-icon{font-size:17px};&.blue{background:rgba(26,86,219,0.1);ion-icon{color:#1a56db}}&.gold{background:rgba(245,158,11,0.1);ion-icon{color:#d97706}}&.green{background:rgba(16,185,129,0.1);ion-icon{color:#059669}}&.red{background:rgba(239,68,68,0.1);ion-icon{color:#dc2626}}}
+.kv{font-family:'Montserrat',sans-serif;font-size:15px;font-weight:900;color:#0d2252;margin:0;&.red{color:#dc2626}}
+.kl{font-size:9px;color:#94a3b8;font-weight:700;margin:2px 0 0}
+.chart-card,.ops-card,.freq-card{background:white;border-radius:16px;padding:14px;box-shadow:0 3px 14px rgba(26,86,219,0.07)}
+.chart-title,.ops-title{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:900;color:#0d2252;margin:0 0 12px}
+.bars-wrap{display:flex;align-items:flex-end;gap:6px;height:80px}
+.bar-col{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1}
+.bar{width:100%;border-radius:5px 5px 0 0;background:linear-gradient(180deg,#3b82f6,#1a56db);min-height:4px;transition:height .4s;&.gold{background:linear-gradient(180deg,#fcd34d,#f59e0b)}}
+.bar-lbl{font-size:8px;color:#94a3b8;font-weight:700}
+.chart-empty{padding:16px;text-align:center;p{color:#94a3b8;font-size:12px}}
+.op-empty{display:flex;flex-direction:column;align-items:center;padding:16px;ion-icon{font-size:32px;color:#cbd5e1}p{color:#94a3b8;font-size:12px;margin-top:8px}}
+.op-item{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f1f5f9;&:last-child{border-bottom:none}}
+.op-ico{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;ion-icon{font-size:13px};&.in{background:rgba(16,185,129,0.1);ion-icon{color:#059669}}}
+.op-info{flex:1}
+.op-name{font-size:11px;font-weight:700;color:#1e293b;margin:0}
+.op-date{font-size:9px;color:#94a3b8;margin:2px 0 0}
+.op-amt{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:900;&.in{color:#059669}}
+.freq-row-r{display:flex;flex-direction:column;gap:8px}
+.fr-item{display:flex;align-items:center;gap:8px}
+.fr-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;&.blue{background:#1a56db}&.gold{background:#f59e0b}&.green{background:#10b981}}
+.fr-lbl{font-size:12px;color:#64748b;flex:1}
+.fr-val{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:900;color:#0d2252}

@@ -1,0 +1,190 @@
+@use "theme/variables.scss";
+@import "@ionic/angular/css/core.css";
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Montserrat:wght@600;700;800;900&display=swap');
+
+* { box-sizing: border-box; }
+body { font-family: 'Nunito', sans-serif; }
+
+/* ══════════════════════════════════════════════════════════════
+   ANIMACIONES GLOBALES
+══════════════════════════════════════════════════════════════ */
+@keyframes fadeUp   { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn   { from{opacity:0} to{opacity:1} }
+@keyframes slideDown{ from{opacity:0;transform:translateY(-24px) scale(0.95)} to{opacity:1;transform:translateY(0) scale(1)} }
+@keyframes popIn    { 0%{opacity:0;transform:scale(0.80)} 60%{transform:scale(1.04)} 100%{opacity:1;transform:scale(1)} }
+
+/* ══════════════════════════════════════════════════════════════
+   TOAST BASE — fc-toast
+   Estrategia: variables CSS + ::part() + clases por tipo
+   Esto garantiza que funcione sin importar la versión de Ionic
+══════════════════════════════════════════════════════════════ */
+ion-toast.fc-toast {
+  --border-radius: 18px;
+  --box-shadow: 0 16px 48px rgba(0,0,0,0.28);
+  --max-width: 90%;
+  --start: 5%;
+  --end: 5%;
+  --min-height: 62px;
+
+  &::part(container) {
+    border-radius: 18px;
+    min-height: 62px;
+    padding: 0 6px;
+    align-items: center;
+  }
+  &::part(message) {
+    font-family: 'Nunito', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+    line-height: 1.4 !important;
+    padding: 0 4px !important;
+    color: #ffffff !important;
+  }
+  &::part(icon) {
+    font-size: 22px !important;
+    margin-inline-end: 2px !important;
+  }
+  &::part(button) {
+    color: rgba(255,255,255,0.75) !important;
+    font-size: 20px !important;
+  }
+}
+
+/* ── SUCCESS ── */
+ion-toast.fc-toast-success {
+  --background: #059669;
+  --color: #ffffff;
+  &::part(container) { background: #059669; }
+  &::part(message)   { color: #ffffff !important; }
+  &::part(icon)      { color: #ffffff !important; }
+  &::part(button)    { color: rgba(255,255,255,0.75) !important; }
+}
+
+/* ── DANGER ── */
+ion-toast.fc-toast-danger {
+  --background: #dc2626;
+  --color: #ffffff;
+  &::part(container) { background: #dc2626; }
+  &::part(message)   { color: #ffffff !important; }
+  &::part(icon)      { color: #ffffff !important; }
+  &::part(button)    { color: rgba(255,255,255,0.75) !important; }
+}
+
+/* ── WARNING ── */
+ion-toast.fc-toast-warning {
+  --background: #b45309;
+  --color: #ffffff;
+  &::part(container) { background: #b45309; }
+  &::part(message)   { color: #ffffff !important; }
+  &::part(icon)      { color: #ffffff !important; }
+  &::part(button)    { color: rgba(255,255,255,0.75) !important; }
+}
+
+/* ── INFO / MEDIUM ── */
+ion-toast.fc-toast-info {
+  --background: #1e293b;
+  --color: #ffffff;
+  &::part(container) { background: #1e293b; }
+  &::part(message)   { color: #ffffff !important; }
+  &::part(icon)      { color: #ffffff !important; }
+  &::part(button)    { color: rgba(255,255,255,0.75) !important; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   ALERT PROFESIONAL — fc-alert
+══════════════════════════════════════════════════════════════ */
+ion-alert.fc-alert {
+  --backdrop-opacity: 0.58;
+
+  .alert-wrapper {
+    border-radius: 22px !important;
+    overflow: hidden !important;
+    max-width: 330px !important;
+    width: 88% !important;
+    background: #ffffff !important;
+    box-shadow: 0 28px 70px rgba(13,34,82,0.35) !important;
+    padding: 0 !important;
+    animation: popIn .3s ease both !important;
+  }
+  .alert-head {
+    background: linear-gradient(135deg,#0d2252 0%,#1a56db 100%) !important;
+    padding: 20px 22px 14px !important;
+    text-align: center !important;
+  }
+  .alert-title {
+    font-family:'Montserrat',sans-serif !important;
+    font-size:17px !important;font-weight:900 !important;
+    color:#ffffff !important;letter-spacing:.3px !important;
+  }
+  .alert-sub-title {
+    font-family:'Nunito',sans-serif !important;
+    font-size:13px !important;font-weight:700 !important;
+    color:#fcd34d !important;margin-top:4px !important;
+  }
+  .alert-message {
+    white-space:pre-line !important;
+    font-family:'Nunito',sans-serif !important;
+    font-size:14px !important;font-weight:700 !important;
+    color:#334155 !important;line-height:1.7 !important;
+    padding:20px 22px 14px !important;
+    text-align:center !important;background:#ffffff !important;
+  }
+  .alert-button-group {
+    display:flex !important;gap:8px !important;
+    padding:8px 16px 18px !important;background:#ffffff !important;
+  }
+  .alert-button {
+    flex:1 !important;border-radius:12px !important;height:48px !important;
+    font-family:'Montserrat',sans-serif !important;
+    font-size:13px !important;font-weight:900 !important;
+    text-transform:none !important;margin:0 !important;
+    border:none !important;opacity:1 !important;
+    &:active { transform:scale(0.97) !important; }
+  }
+  .alert-button.fc-alert-cancel {
+    background:#e2e8f0 !important;
+    .alert-button-inner { color:#475569 !important;justify-content:center !important; }
+  }
+  .alert-button.fc-alert-confirm {
+    background:#1a56db !important;
+    box-shadow:0 5px 16px rgba(26,86,219,0.45) !important;
+    .alert-button-inner { color:#ffffff !important;justify-content:center !important; }
+  }
+  .alert-button.fc-alert-danger {
+    background:#dc2626 !important;
+    box-shadow:0 5px 16px rgba(220,38,38,0.40) !important;
+    .alert-button-inner { color:#ffffff !important;justify-content:center !important; }
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   LOADING
+══════════════════════════════════════════════════════════════ */
+ion-loading {
+  --backdrop-opacity: 0.50;
+  .loading-wrapper {
+    border-radius:18px !important;
+    box-shadow:0 20px 50px rgba(13,34,82,0.28) !important;
+  }
+  .loading-content {
+    font-family:'Nunito',sans-serif !important;
+    font-weight:700 !important;color:#1e293b !important;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width:4px;height:4px; }
+::-webkit-scrollbar-thumb { background:rgba(26,86,219,0.18);border-radius:99px; }
+
+/* Modal */
+ion-modal { --background:transparent; }
+ion-modal::part(handle) { background:#cbd5e1; }

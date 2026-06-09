@@ -1,0 +1,119 @@
+<ion-content class="login-content" [fullscreen]="true" [scrollY]="true">
+
+  <div class="bg-glow g1"></div>
+  <div class="bg-glow g2"></div>
+  <div class="bg-glow g3"></div>
+
+  <div class="login-wrap">
+
+    <!-- LOGO + TEXTO -->
+    <div class="logo-section">
+      <div class="logo-image-box">
+        <img src="assets/flex-credi.png" alt="FlexCredi" class="logo-img" />
+      </div>
+      <p class="logo-tagline">Sistema de Gestión de Préstamos Personales</p>
+    </div>
+
+    <!-- FORMULARIO LOGIN -->
+    <form class="form-section" *ngIf="modo==='login'" (ngSubmit)="onLogin()" autocomplete="off">
+
+      <div class="input-field">
+        <ion-icon name="mail-outline" class="field-ico"></ion-icon>
+        <ion-input
+          type="email"
+          placeholder="Correo electrónico"
+          [(ngModel)]="email"
+          name="email"
+          autocomplete="email"
+          class="clean-input">
+        </ion-input>
+      </div>
+
+      <div class="input-field">
+        <ion-icon name="lock-closed-outline" class="field-ico"></ion-icon>
+        <ion-input
+          [type]="showPass ? 'text' : 'password'"
+          placeholder="Contraseña"
+          [(ngModel)]="password"
+          name="password"
+          autocomplete="current-password"
+          class="clean-input pass-input">
+        </ion-input>
+        <ion-icon
+          [name]="showPass ? 'eye-off-outline' : 'eye-outline'"
+          class="eye-toggle"
+          (click)="showPass = !showPass">
+        </ion-icon>
+      </div>
+
+      <button type="submit" class="btn-primary ion-activatable" [disabled]="loadingState">
+        <ion-ripple-effect></ion-ripple-effect>
+        <span *ngIf="!loadingState">Iniciar sesión</span>
+        <span *ngIf="loadingState" class="btn-loading">
+          <ion-spinner name="crescent"></ion-spinner> Verificando...
+        </span>
+      </button>
+
+      <button type="button" class="link-forgot" (click)="olvidoContrasena()">
+        ¿Olvidaste tu contraseña?
+      </button>
+
+      <button type="button" class="link-create" (click)="modo='registro'">
+        Crear cuenta
+      </button>
+
+    </form>
+
+    <!-- FORMULARIO REGISTRO -->
+    <form class="form-section" *ngIf="modo==='registro'" (ngSubmit)="onRegistro()" autocomplete="off">
+
+      <h3 class="form-heading">Crear cuenta nueva</h3>
+
+      <div class="input-field">
+        <ion-icon name="person-outline" class="field-ico"></ion-icon>
+        <ion-input type="text" placeholder="Nombre completo" [(ngModel)]="nombre" name="nombre" class="clean-input"></ion-input>
+      </div>
+
+      <div class="input-field">
+        <ion-icon name="mail-outline" class="field-ico"></ion-icon>
+        <ion-input type="email" placeholder="Correo electrónico" [(ngModel)]="email" name="email-reg" class="clean-input"></ion-input>
+      </div>
+
+      <div class="input-field">
+        <ion-icon name="lock-closed-outline" class="field-ico"></ion-icon>
+        <ion-input
+          [type]="showPass ? 'text' : 'password'"
+          placeholder="Contraseña (mín. 6 caracteres)"
+          [(ngModel)]="password"
+          name="password-reg"
+          class="clean-input pass-input">
+        </ion-input>
+        <ion-icon
+          [name]="showPass ? 'eye-off-outline' : 'eye-outline'"
+          class="eye-toggle"
+          (click)="showPass = !showPass">
+        </ion-icon>
+      </div>
+
+      <div class="input-field">
+        <ion-icon name="lock-closed-outline" class="field-ico"></ion-icon>
+        <ion-input type="password" placeholder="Confirmar contraseña" [(ngModel)]="confirmPass" name="confirm" class="clean-input pass-input"></ion-input>
+      </div>
+
+      <button type="submit" class="btn-primary ion-activatable" [disabled]="loadingState">
+        <ion-ripple-effect></ion-ripple-effect>
+        <span *ngIf="!loadingState">Crear cuenta</span>
+        <span *ngIf="loadingState" class="btn-loading">
+          <ion-spinner name="crescent"></ion-spinner> Creando...
+        </span>
+      </button>
+
+      <button type="button" class="link-back" (click)="modo='login'">
+        ← Volver a iniciar sesión
+      </button>
+
+    </form>
+
+    <p class="version-tag">FlexCredi APP v1.0</p>
+  </div>
+</ion-content>

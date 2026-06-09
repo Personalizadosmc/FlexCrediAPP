@@ -1,0 +1,54 @@
+.rp-content{--background:#eef2ff}
+.rp-header{background:linear-gradient(150deg,#0d2252,#1340a0,#1a56db);padding:0 16px;position:relative;overflow:hidden;&::after{content:'';position:absolute;top:-50px;right:-50px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,0.1),transparent 70%)}}
+.rh-inner{display:flex;align-items:center;gap:12px;padding:52px 0 14px;position:relative;z-index:1}
+.back-btn{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;flex-shrink:0;ion-icon{color:white;font-size:18px}&:active{background:rgba(255,255,255,0.25)}}
+.rh-title{font-family:'Montserrat',sans-serif;font-size:16px;font-weight:900;color:white;margin:0}
+.rh-sub{font-size:10px;color:rgba(255,255,255,0.5);margin:2px 0 0}
+.rh-ico-badge{margin-left:auto;width:34px;height:34px;border-radius:10px;background:rgba(245,158,11,0.2);border:1px solid rgba(245,158,11,0.3);display:flex;align-items:center;justify-content:center;ion-icon{color:#fcd34d;font-size:17px}}
+.search-bar{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:4px 13px;margin-bottom:16px;position:relative;z-index:1;ion-icon{color:rgba(255,255,255,0.4);font-size:15px;flex-shrink:0}.sr-inp{--background:transparent;--color:white;--placeholder-color:rgba(255,255,255,0.3);--padding-top:9px;--padding-bottom:9px;--padding-start:0;font-size:13px;flex:1}}
+.rp-body{padding:12px 14px 0}
+.stats-row{display:flex;gap:8px;margin-bottom:12px}
+.stat-chip{flex:1;background:white;border-radius:12px;padding:10px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);&.blue .sc-n{color:#1a56db}&.red .sc-n{color:#dc2626}}
+.sc-n{display:block;font-family:'Montserrat',sans-serif;font-size:18px;font-weight:900}
+.sc-l{font-size:9px;color:#94a3b8;font-weight:700}
+.list-lbl{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:900;color:#1e293b;margin:0 0 10px}
+.empty-wrap{display:flex;flex-direction:column;align-items:center;padding:36px 16px;ion-icon{font-size:46px;color:#cbd5e1}p{color:#94a3b8;font-size:14px;margin:10px 0 14px}}
+.empty-btn{position:relative;overflow:hidden;background:linear-gradient(135deg,#1a56db,#3b82f6);border:none;border-radius:12px;padding:11px 22px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:white;cursor:pointer}
+.client-list{display:flex;flex-direction:column;gap:8px}
+.client-card{background:white;border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 3px 14px rgba(26,86,219,0.07);border:2px solid transparent;cursor:pointer;position:relative;overflow:hidden;animation:fadeUp .4s ease both;transition:all .2s;&.selected{border-color:#1a56db;background:#eff6ff;box-shadow:0 6px 20px rgba(26,86,219,0.18)}&.atrasado-card:not(.selected){border-color:rgba(239,68,68,0.2);background:rgba(254,242,242,0.5)}&:active{transform:scale(0.98)}}
+.cc-av{width:42px;height:42px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:white}
+.cc-info{flex:1;min-width:0}
+.cc-name{font-size:13px;font-weight:800;color:#1e293b;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cc-sub{font-size:10px;color:#94a3b8;margin:2px 0 5px}
+.cc-prog{height:3px;background:#f1f5f9;border-radius:99px;overflow:hidden}
+.cc-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#1a56db,#60a5fa);transition:width .5s;&.red{background:linear-gradient(90deg,#ef4444,#fca5a5)}}
+.cc-right{text-align:right;flex-shrink:0}
+.cc-amt{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:900;color:#0d2252;margin:0 0 4px;&.danger{color:#dc2626}}
+.cc-badge{font-size:9px;font-weight:800;padding:3px 8px;border-radius:99px;display:inline-block}
+.cc-check{color:#1a56db;font-size:22px;flex-shrink:0}
+.cc-arr{color:#cbd5e1;font-size:16px;flex-shrink:0}
+.cuota-panel{background:white;border-radius:18px;padding:16px;margin-top:12px;box-shadow:0 6px 24px rgba(26,86,219,0.12);border:2px solid #dbeafe;display:flex;flex-direction:column;gap:10px;animation:fadeUp .3s ease both}
+.cp-head{display:flex;justify-content:space-between;align-items:flex-start}
+.cp-eyebrow{font-size:9px;font-weight:800;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;margin:0}
+.cp-sub{font-size:12px;font-weight:700;color:#1e293b;margin:3px 0 0}
+.cp-ok{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#059669,#10b981);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(16,185,129,0.45);ion-icon{color:white;font-size:14px}}
+.cp-amount{font-family:'Montserrat',sans-serif;font-size:28px;font-weight:900;color:#0d2252;margin:0}
+.cp-date{font-size:11px;color:#94a3b8;margin:0}
+.wa-row{display:flex;align-items:center;justify-content:space-between;background:#f8faff;border-radius:12px;padding:10px 12px}
+.wa-left{display:flex;align-items:center;gap:10px}
+.wa-ico{width:30px;height:30px;border-radius:8px;background:#25d366;display:flex;align-items:center;justify-content:center;ion-icon{color:white;font-size:16px}}
+.wa-t{font-size:12px;font-weight:800;color:#1e293b;margin:0}
+.wa-s{font-size:10px;color:#94a3b8;margin:1px 0 0}
+.wa-tog{--track-background:#e2e8f0;--track-background-checked:#1a56db}
+.empty-hint{display:flex;flex-direction:column;align-items:center;padding:24px 16px;.eh-icon{font-size:34px;margin-bottom:8px}p{color:#94a3b8;font-size:13px}}
+.rp-footer{position:fixed;bottom:0;left:0;right:0;background:rgba(238,242,255,0.96);backdrop-filter:blur(10px);padding:12px 16px max(12px,env(safe-area-inset-bottom));border-top:1px solid #e2e8f0}
+.btn-pagar{width:100%;height:52px;border:none;border-radius:13px;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Montserrat',sans-serif;font-size:14px;font-weight:900;color:white;cursor:pointer;position:relative;overflow:hidden;transition:all .2s;background:#cbd5e1;box-shadow:none;ion-icon{font-size:20px}&.active{background:linear-gradient(135deg,#1340a0,#1a56db,#3b82f6);box-shadow:0 8px 24px rgba(26,86,219,0.45)}&[disabled]{cursor:not-allowed;opacity:.85}&:not([disabled]):active{transform:scale(0.98)}}
+
+/* ─── FIX: texto visible en búsqueda ─── */
+.fc-inp::part(native),
+ion-input::part(native) {
+  color: #0d2252 !important;
+  -webkit-text-fill-color: #0d2252 !important;
+  background: transparent !important;
+  font-size: 14px !important;
+}

@@ -1,0 +1,69 @@
+<ion-content class="cli-content" [fullscreen]="true">
+  <div class="cli-header">
+    <div class="cli-topbar">
+      <button class="back-btn ion-activatable" (click)="ir('/dashboard')">
+        <ion-ripple-effect></ion-ripple-effect>
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <h2 class="cli-title">Mis Clientes</h2>
+      <button class="add-btn ion-activatable" (click)="ir('/nuevo-cliente')">
+        <ion-ripple-effect></ion-ripple-effect>
+        <ion-icon name="add-outline"></ion-icon>
+      </button>
+    </div>
+    <div class="search-box">
+      <ion-icon name="search-outline"></ion-icon>
+      <ion-input placeholder="Buscar por nombre, cédula o teléfono..." [(ngModel)]="busqueda" (ionInput)="filtrar()" class="s-inp"></ion-input>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-chip"><span class="sc-n blue">{{clientes.length}}</span><span class="sc-l">Total</span></div>
+    <div class="stat-chip"><span class="sc-n green">{{clientes.length}}</span><span class="sc-l">Activos</span></div>
+    <div class="stat-chip"><span class="sc-n gold">{{filtrados.length}}</span><span class="sc-l">Mostrados</span></div>
+  </div>
+
+  <div class="cli-body">
+    <div class="empty-state" *ngIf="clientes.length===0">
+      <ion-icon name="person-outline"></ion-icon>
+      <p>No tienes clientes registrados</p>
+      <button class="empty-btn ion-activatable" (click)="ir('/nuevo-cliente')">
+        <ion-ripple-effect></ion-ripple-effect>+ Agregar primer cliente
+      </button>
+    </div>
+
+    <div class="cli-list">
+      <div class="cli-card ion-activatable" *ngFor="let c of filtrados; let i=index" [style.animation-delay]="(i*.06)+'s'">
+        <ion-ripple-effect></ion-ripple-effect>
+        <div class="cc-av" [style.background]="data.getAvatarColor(c.nombre)">{{data.getIniciales(c.nombre)}}</div>
+        <div class="cc-info">
+          <p class="cc-name">{{c.nombre}}</p>
+          <p class="cc-ced">🪪 {{c.cedula}}</p>
+          <p class="cc-tel">📞 {{c.telefono}}</p>
+          <div class="cc-badges">
+            <span class="cb blue">{{getPrestamosCount(c.id)}} préstamos</span>
+            <span class="cb green" *ngIf="getTotalPrestado(c.id)>0">{{data.formatMoney(getTotalPrestado(c.id))}}</span>
+          </div>
+        </div>
+        <div class="cc-actions">
+          <button class="act-btn gold ion-activatable" (click)="ir('/nuevo-prestamo')">
+            <ion-ripple-effect></ion-ripple-effect>
+            <ion-icon name="add-outline"></ion-icon>
+          </button>
+          <button class="act-btn red ion-activatable" (click)="eliminar(c)">
+            <ion-ripple-effect></ion-ripple-effect>
+            <ion-icon name="trash-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div style="height:80px"></div>
+  </div>
+</ion-content>
+
+<div class="footer-add">
+  <button class="btn-add-client ion-activatable" (click)="ir('/nuevo-cliente')">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="add-outline"></ion-icon> Agregar Cliente
+  </button>
+</div>

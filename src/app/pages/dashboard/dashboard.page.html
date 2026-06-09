@@ -1,0 +1,248 @@
+<ion-content class="dash-content" [fullscreen]="true">
+
+  <!-- BANNER OFFLINE — aparece automáticamente cuando se pierde la red -->
+  <div class="offline-banner" *ngIf="!(network.state$ | async)?.connected">
+    <ion-icon name="cloud-offline-outline"></ion-icon>
+    <span>Sin conexión — Los datos se guardan localmente</span>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero" [class.hero-offline]="!(network.state$ | async)?.connected">
+    <div class="hero-glow g1"></div><div class="hero-glow g2"></div>
+    <div class="hero-top">
+      <div class="brand-logo-wrap">
+        <img src="assets/flex-credi.png" alt="FlexCredi" class="brand-logo-img" />
+      </div>
+      <div class="hero-actions">
+
+        <!-- BOTÓN ESTADO DE RED -->
+        <button class="net-btn ion-activatable" (click)="abrirRedModal()" [class.net-offline]="!(network.state$ | async)?.connected">
+          <ion-ripple-effect></ion-ripple-effect>
+          <span class="net-dot" [class.dot-on]="(network.state$ | async)?.connected" [class.dot-off]="!(network.state$ | async)?.connected"></span>
+          <ion-icon name="wifi-outline" *ngIf="(network.state$ | async)?.connected"></ion-icon>
+          <ion-icon name="cloud-offline-outline" *ngIf="!(network.state$ | async)?.connected"></ion-icon>
+          <span class="net-lbl">Estado de red</span>
+        </button>
+
+        <div class="icon-btn ion-activatable" (click)="ir('/recibir-pago')">
+          <ion-ripple-effect></ion-ripple-effect>
+          <ion-icon name="notifications-outline"></ion-icon>
+          <span class="notif-dot" *ngIf="stats.atrasados>0">{{stats.atrasados}}</span>
+        </div>
+        <div class="icon-btn ion-activatable" (click)="logout()">
+          <ion-ripple-effect></ion-ripple-effect>
+          <ion-icon name="log-out-outline"></ion-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="greeting">
+      <div>
+        <p class="hi-sub">¡Bienvenido! 👋</p>
+        <h2 class="hi-name">{{usuario}}</h2>
+      </div>
+      <div class="user-av">{{iniciales}}</div>
+    </div>
+
+    <div class="freq-tabs">
+      <button class="ftab ion-activatable" [class.on]="frecuencia==='semanal'" (click)="setFrecuencia('semanal')">
+        <ion-ripple-effect></ion-ripple-effect>Semanal
+      </button>
+      <button class="ftab ion-activatable" [class.on]="frecuencia==='quincenal'" (click)="setFrecuencia('quincenal')">
+        <ion-ripple-effect></ion-ripple-effect>Quincenal
+      </button>
+      <button class="ftab ion-activatable" [class.on]="frecuencia==='mensual'" (click)="setFrecuencia('mensual')">
+        <ion-ripple-effect></ion-ripple-effect>Mensual
+      </button>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <p class="kpi-lbl">TOTAL PRÉSTAMOS</p>
+        <p class="kpi-val gold">{{data.formatMoney(stats.totalCartera||0)}}</p>
+      </div>
+      <div class="kpi-card">
+        <p class="kpi-lbl">TOTAL CLIENTES</p>
+        <p class="kpi-val white">{{stats.totalClientes||0}}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHITE BODY -->
+  <div class="body-card">
+    <div class="quick-grid">
+      <button class="qbtn ion-activatable" (click)="ir('/nuevo-prestamo')">
+        <ion-ripple-effect></ion-ripple-effect>
+        <div class="qico green"><ion-icon name="add-circle-outline"></ion-icon></div>
+        <span>Nuevo Préstamo</span>
+      </button>
+      <button class="qbtn ion-activatable" (click)="ir('/recibir-pago')">
+        <ion-ripple-effect></ion-ripple-effect>
+        <div class="qico gold"><ion-icon name="card-outline"></ion-icon></div>
+        <span>Recibir Pago</span>
+      </button>
+      <button class="qbtn ion-activatable" (click)="ir('/clientes')">
+        <ion-ripple-effect></ion-ripple-effect>
+        <div class="qico blue"><ion-icon name="people-outline"></ion-icon></div>
+        <span>Clientes</span>
+      </button>
+      <button class="qbtn ion-activatable" (click)="ir('/reportes')">
+        <ion-ripple-effect></ion-ripple-effect>
+        <div class="qico red"><ion-icon name="bar-chart-outline"></ion-icon></div>
+        <span>Reportes</span>
+      </button>
+    </div>
+
+    <div class="section-hdr">
+      <p class="sec-title">Préstamos Activos</p>
+      <button class="see-all" (click)="ir('/recibir-pago')">Ver todos →</button>
+    </div>
+
+    <div class="empty-wrap" *ngIf="prestamos.length===0">
+      <ion-icon name="time-outline"></ion-icon>
+      <p>No hay préstamos {{frecuencia}}s aún</p>
+      <button class="empty-btn ion-activatable" (click)="ir('/nuevo-prestamo')">
+        <ion-ripple-effect></ion-ripple-effect>+ Crear primer préstamo
+      </button>
+    </div>
+
+    <div class="prest-list">
+      <div class="prest-card ion-activatable" *ngFor="let p of prestamos; let i=index"
+        (click)="ir('/recibir-pago')" [style.animation-delay]="(i*.07)+'s'">
+        <ion-ripple-effect></ion-ripple-effect>
+        <div class="pc-av" [style.background]="data.getAvatarColor(p.clienteNombre)">
+          {{data.getIniciales(p.clienteNombre)}}
+        </div>
+        <div class="pc-info">
+          <p class="pc-name">{{p.clienteNombre}}</p>
+          <p class="pc-sub">{{p.frecuencia | titlecase}} · Cuota {{data.formatMoney(p.cuotaMonto)}}</p>
+          <div class="prog-bar"><div class="prog-fill" [style.width]="getPct(p)+'%'" [class.red]="p.estado==='atrasado'"></div></div>
+        </div>
+        <div class="pc-right">
+          <p class="pc-amt">{{data.formatMoney(p.monto)}}</p>
+          <span class="est-badge" [style.color]="estadoColor(p.estado)" [style.background]="estadoBg(p.estado)">
+            {{estadoLabel(p.estado)}}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-nuevo ion-activatable" (click)="ir('/nuevo-prestamo')" *ngIf="prestamos.length>0">
+      <ion-ripple-effect></ion-ripple-effect>
+      <ion-icon name="add-circle-outline"></ion-icon> Nuevo Préstamo
+    </button>
+
+    <div style="height:90px"></div>
+  </div>
+</ion-content>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <div class="tab-item on ion-activatable"><ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="home-outline"></ion-icon><span>Inicio</span><div class="t-dot"></div>
+  </div>
+  <div class="tab-item ion-activatable" (click)="ir('/clientes')"><ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="people-outline"></ion-icon><span>Clientes</span>
+  </div>
+  <div class="tab-fab"></div>
+  <div class="tab-item ion-activatable" (click)="ir('/recibir-pago')"><ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="card-outline"></ion-icon><span>Pagos</span>
+  </div>
+  <div class="tab-item ion-activatable" (click)="ir('/reportes')"><ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="bar-chart-outline"></ion-icon><span>Reportes</span>
+  </div>
+</div>
+
+<ion-fab vertical="bottom" horizontal="center" slot="fixed" style="margin-bottom:4px">
+  <ion-fab-button class="center-fab" (click)="ir('/nuevo-prestamo')">
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
+
+<!-- ══════════════════════════════════════════
+     MODAL ESTADO DE RED
+══════════════════════════════════════════ -->
+<div class="net-modal-overlay" *ngIf="redModalOpen" (click)="cerrarRedModal()">
+  <div class="net-modal-card" (click)="$event.stopPropagation()" [class.modal-offline]="!(network.state$ | async)?.connected">
+
+    <!-- Cabecera -->
+    <div class="nm-head" [class.nm-head-offline]="!(network.state$ | async)?.connected">
+      <div class="nm-head-icon">
+        <ion-icon name="wifi-outline"         *ngIf="(network.state$ | async)?.connected"></ion-icon>
+        <ion-icon name="cloud-offline-outline" *ngIf="!(network.state$ | async)?.connected"></ion-icon>
+      </div>
+      <div class="nm-head-txt">
+        <h3>Estado de Red</h3>
+        <p>FlexCredi APP · Conectividad</p>
+      </div>
+      <button class="nm-close" (click)="cerrarRedModal()">
+        <ion-icon name="close-outline"></ion-icon>
+      </button>
+    </div>
+
+    <!-- Estado principal -->
+    <ng-container *ngIf="network.state$ | async as estado">
+
+      <!-- ONLINE -->
+      <div class="nm-status online" *ngIf="estado.connected">
+        <div class="nm-pulse"></div>
+        <div class="nm-status-ico">🟢</div>
+        <div class="nm-status-txt">
+          <p class="ns-title">En línea</p>
+          <p class="ns-sub">Conexión activa y estable</p>
+        </div>
+      </div>
+
+      <!-- OFFLINE -->
+      <div class="nm-status offline" *ngIf="!estado.connected">
+        <div class="nm-status-ico">🔴</div>
+        <div class="nm-status-txt">
+          <p class="ns-title">Sin conexión</p>
+          <p class="ns-sub">Modo offline activado — datos guardados localmente</p>
+        </div>
+      </div>
+
+      <!-- DETALLES -->
+      <div class="nm-details">
+        <div class="nm-row">
+          <span class="nm-key"><ion-icon name="cellular-outline"></ion-icon> Tipo de red</span>
+          <span class="nm-val">{{ network.tipoConexionLabel(estado.connectionType) }}</span>
+        </div>
+        <div class="nm-row">
+          <span class="nm-key"><ion-icon name="time-outline"></ion-icon> Última verificación</span>
+          <span class="nm-val">{{ estado.lastChecked | date:'HH:mm:ss' }}</span>
+        </div>
+        <div class="nm-row">
+          <span class="nm-key"><ion-icon name="layers-outline"></ion-icon> Datos pendientes</span>
+          <span class="nm-val nm-pending" [class.has-pending]="pendingCount > 0">
+            {{ pendingCount > 0 ? pendingCount + ' cambios' : 'Ninguno' }}
+          </span>
+        </div>
+        <div class="nm-row">
+          <span class="nm-key"><ion-icon name="shield-checkmark-outline"></ion-icon> Almacenamiento</span>
+          <span class="nm-val">localStorage activo</span>
+        </div>
+      </div>
+
+      <!-- MENSAJE MODO OFFLINE -->
+      <div class="nm-offline-msg" *ngIf="!estado.connected">
+        <ion-icon name="information-circle-outline"></ion-icon>
+        <p>La aplicación sigue funcionando. Tus registros se guardan localmente y se sincronizarán automáticamente al recuperar la conexión.</p>
+      </div>
+
+      <!-- BOTÓN SINCRONIZAR (solo visible online con pendientes) -->
+      <button class="nm-sync-btn ion-activatable" *ngIf="estado.connected && pendingCount > 0" (click)="sincronizarManual()">
+        <ion-ripple-effect></ion-ripple-effect>
+        <ion-icon name="sync-outline"></ion-icon> Sincronizar ahora ({{pendingCount}})
+      </button>
+
+    </ng-container>
+
+    <!-- FOOTER -->
+    <div class="nm-footer">
+      <button class="nm-close-btn ion-activatable" (click)="cerrarRedModal()">
+        <ion-ripple-effect></ion-ripple-effect>Cerrar
+      </button>
+    </div>
+  </div>
+</div>
