@@ -2,11 +2,13 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { IonContent, IonInput, IonIcon, IonRippleEffect, IonSpinner, AlertController } from '@ionic/angular/standalone';
+import {
+  IonContent, IonInput, IonIcon, IonRippleEffect, IonSpinner,
+  ToastController, AlertController
+} from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { eyeOutline, eyeOffOutline, mailOutline, lockClosedOutline, personOutline } from 'ionicons/icons';
 import { AuthService } from '../../services/auth.service';
-import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -23,7 +25,7 @@ export class LoginPage {
   constructor(
     private auth: AuthService,
     private router: Router,
-    private toastSvc: ToastService,
+    private toast: ToastController,
     private alert: AlertController
   ) {
     addIcons({ eyeOutline, eyeOffOutline, mailOutline, lockClosedOutline, personOutline });
@@ -32,19 +34,19 @@ export class LoginPage {
   async onLogin() {
     if (this.loadingState) return;
     if (!this.email.trim() || !this.password.trim())
-      return this.toastSvc.warning('Por favor, completa todos los campos');
+      return this.showToast('Por favor, completa todos los campos', 'warning');
     if (!this.validarEmail(this.email))
-      return this.toastSvc.warning('El correo electrónico no es válido');
+      return this.showToast('El correo electrónico no es válido', 'warning');
 
     this.loadingState = true;
     setTimeout(() => {
       const r = this.auth.login(this.email.trim(), this.password);
       this.loadingState = false;
       if (r.ok) {
-        this.toastSvc.success('¡Bienvenido de nuevo!');
+        this.showToast('¡Bienvenido de nuevo!', 'success');
         this.router.navigateByUrl('/dashboard', { replaceUrl: true });
       } else {
-        this.toastSvc.error(r.msg);
+        this.showToast(r.msg, 'danger');
       }
     }, 700);
   }
@@ -52,24 +54,24 @@ export class LoginPage {
   async onRegistro() {
     if (this.loadingState) return;
     if (!this.nombre.trim() || !this.email.trim() || !this.password.trim())
-      return this.toastSvc.warning('Por favor, completa todos los campos');
+      return this.showToast('Por favor, completa todos los campos', 'warning');
     if (!this.validarEmail(this.email))
-      return this.toastSvc.warning('El correo electrónico no es válido');
+      return this.showToast('El correo electrónico no es válido', 'warning');
     if (this.password.length < 6)
-      return this.toastSvc.warning('La contraseña debe tener al menos 6 caracteres');
+      return this.showToast('La contraseña debe tener al menos 6 caracteres', 'warning');
     if (this.password !== this.confirmPass)
-      return this.toastSvc.warning('Las contraseñas no coinciden');
+      return this.showToast('Las contraseñas no coinciden', 'warning');
 
     this.loadingState = true;
     setTimeout(() => {
       const r = this.auth.registrar(this.nombre.trim(), this.email.trim(), this.password);
       this.loadingState = false;
       if (r.ok) {
-        this.toastSvc.success('¡Cuenta creada! Ahora inicia sesión');
+        this.showToast('¡Cuenta creada! Ahora inicia sesión', 'success');
         this.modo = 'login';
         this.password = ''; this.confirmPass = ''; this.nombre = '';
       } else {
-        this.toastSvc.error(r.msg);
+        this.showToast(r.msg, 'danger');
       }
     }, 800);
   }
@@ -86,5 +88,16 @@ export class LoginPage {
 
   private validarEmail(e: string): boolean {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.trim());
+  }
+
+  private async showToast(msg: string, color: 'success' | 'danger' | 'warning' | 'medium') {
+    const t = await this.toast.create({
+      message: msg,
+      duration: 2500,
+      color,
+      position: 'top',
+      cssClass: 'fc-toast'
+    });
+    t.present();
   }
 }

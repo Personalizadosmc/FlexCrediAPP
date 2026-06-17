@@ -91,3 +91,148 @@
     <span *ngIf="prestamoSel && cuotaSel">Registrar Pago — {{data.formatMoney(cuotaSel.monto)}}</span>
   </button>
 </div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MODAL: FACTURA / RECIBO PROFESIONAL
+     Se abre automáticamente tras registrar un pago exitoso
+═══════════════════════════════════════════════════════════ -->
+<div class="fact-overlay" *ngIf="facturaOpen && ultimoPago && ultimoPrestamo" (click)="cerrarFactura()">
+  <div class="fact-modal" (click)="$event.stopPropagation()">
+
+    <!-- Header del recibo -->
+    <div class="fact-head">
+      <div class="fact-head-left">
+        <div class="fact-logo-box">
+          <img src="assets/flex-credi.png" alt="FlexCredi"
+               class="fact-logo-img"
+               (error)="onLogoError($event)" />
+        </div>
+        <div>
+          <h2>FlexCredi</h2>
+          <p>Recibo Oficial de Pago</p>
+        </div>
+      </div>
+      <button class="fact-close" (click)="cerrarFactura()">
+        <ion-icon name="close-outline"></ion-icon>
+      </button>
+    </div>
+
+    <div class="fact-paid-badge">
+      <ion-icon name="checkmark-circle"></ion-icon>
+      <span>PAGO RECIBIDO</span>
+    </div>
+
+    <!-- Cuerpo scrollable -->
+    <div class="fact-body">
+
+      <!-- Meta info -->
+      <div class="fact-meta">
+        <div class="fm-block">
+          <p class="fm-lbl">RECIBO N°</p>
+          <p class="fm-val">{{numeroRecibo}}</p>
+          <p class="fm-sub">{{fechaHoy()}} · {{horaHoy()}}</p>
+        </div>
+        <div class="fm-block right">
+          <p class="fm-lbl">EMITIDO POR</p>
+          <p class="fm-val">{{empresaUsuario?.nombre || 'FlexCredi'}}</p>
+          <p class="fm-sub" *ngIf="empresaUsuario?.email">{{empresaUsuario?.email}}</p>
+        </div>
+      </div>
+
+      <!-- Cliente -->
+      <div class="fact-section">
+        <p class="fs-title"><ion-icon name="card-outline"></ion-icon> CLIENTE</p>
+        <div class="fs-row">
+          <span class="fs-k">Nombre</span>
+          <span class="fs-v">{{ultimoPago.clienteNombre}}</span>
+        </div>
+        <div class="fs-row" *ngIf="ultimoPrestamo.clienteTelefono">
+          <span class="fs-k">Teléfono</span>
+          <span class="fs-v">{{ultimoPrestamo.clienteTelefono}}</span>
+        </div>
+        <div class="fs-row">
+          <span class="fs-k">ID Préstamo</span>
+          <span class="fs-v">{{ultimoPrestamo.id}}</span>
+        </div>
+      </div>
+
+      <!-- Monto destacado -->
+      <div class="fact-amount">
+        <p class="fa-lbl">MONTO RECIBIDO</p>
+        <p class="fa-amt">{{data.formatMoney(ultimoPago.monto)}}</p>
+        <p class="fa-desc">Cuota #{{ultimaCuotaNum}} de {{ultimoPrestamo.numeroCuotas}}</p>
+      </div>
+
+      <!-- Detalles del préstamo -->
+      <div class="fact-section">
+        <p class="fs-title"><ion-icon name="document-text-outline"></ion-icon> DETALLES DEL PRÉSTAMO</p>
+        <div class="fs-row">
+          <span class="fs-k">Capital prestado</span>
+          <span class="fs-v">{{data.formatMoney(ultimoPrestamo.monto)}}</span>
+        </div>
+        <div class="fs-row">
+          <span class="fs-k">Tasa de interés</span>
+          <span class="fs-v">{{ultimoPrestamo.interes}}%</span>
+        </div>
+        <div class="fs-row">
+          <span class="fs-k">Total a pagar</span>
+          <span class="fs-v">{{data.formatMoney(ultimoPrestamo.totalPagar)}}</span>
+        </div>
+        <div class="fs-row">
+          <span class="fs-k">Frecuencia</span>
+          <span class="fs-v">{{ultimoPrestamo.frecuencia | titlecase}}</span>
+        </div>
+        <div class="fs-row">
+          <span class="fs-k">Cuota</span>
+          <span class="fs-v">{{data.formatMoney(ultimoPrestamo.cuotaMonto)}}</span>
+        </div>
+      </div>
+
+      <!-- Estado de pagos -->
+      <div class="fact-section">
+        <p class="fs-title"><ion-icon name="checkmark-circle"></ion-icon> ESTADO DE PAGOS</p>
+        <div class="fs-row">
+          <span class="fs-k">Cuota pagada</span>
+          <span class="fs-v">#{{ultimaCuotaNum}}</span>
+        </div>
+        <div class="fs-row">
+          <span class="fs-k">Vencimiento</span>
+          <span class="fs-v">{{ultimaFechaVenc}}</span>
+        </div>
+        <div class="fs-row green">
+          <span class="fs-k">Cuotas pagadas</span>
+          <span class="fs-v">{{getCuotasPagadasPrestamo()}}/{{ultimoPrestamo.numeroCuotas}}</span>
+        </div>
+        <div class="fs-row" [class.red]="getSaldoPendiente()>0" [class.green]="getSaldoPendiente()===0">
+          <span class="fs-k">Saldo pendiente</span>
+          <span class="fs-v">{{data.formatMoney(getSaldoPendiente())}}</span>
+        </div>
+      </div>
+
+      <!-- Mensaje final -->
+      <div class="fact-thanks">
+        <p class="ft-emoji">🎉</p>
+        <p class="ft-msg">¡Gracias por su pago!</p>
+        <p class="ft-sub">Pago registrado exitosamente en el sistema</p>
+      </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="fact-actions">
+      <button class="fact-btn primary ion-activatable" (click)="imprimirFactura()">
+        <ion-ripple-effect></ion-ripple-effect>
+        <ion-icon name="print-outline"></ion-icon>
+        Imprimir Factura
+      </button>
+      <button class="fact-btn secondary ion-activatable" (click)="compartirFactura()">
+        <ion-ripple-effect></ion-ripple-effect>
+        <ion-icon name="share-social-outline"></ion-icon>
+        Compartir / Descargar
+      </button>
+      <button class="fact-btn ghost ion-activatable" (click)="cerrarFactura()">
+        <ion-ripple-effect></ion-ripple-effect>
+        Cerrar
+      </button>
+    </div>
+  </div>
+</div>

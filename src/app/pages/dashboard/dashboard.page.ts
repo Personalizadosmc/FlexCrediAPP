@@ -66,10 +66,9 @@ export class DashboardPage implements OnInit, OnDestroy {
       if (this.redModalOpen) return;
       if (!estado.connected) {
         const t = await this.toast.create({
-          message: '⚠️ Sin conexión — modo offline activado',
-          duration: 4000, color: 'warning', position: 'top',
-          cssClass: 'fc-toast',
-          buttons: [{ icon: 'close', role: 'cancel' }]
+          message: 'Sin conexión — modo offline activado',
+          duration: 3500, color: 'warning', position: 'top',
+          cssClass: 'fc-toast'
         });
         t.present();
       }
@@ -105,10 +104,9 @@ export class DashboardPage implements OnInit, OnDestroy {
     await this.network.sincronizarColaPendiente();
     this.pendingCount = 0;
     const t = await this.toast.create({
-      message: '✅ Datos sincronizados correctamente',
+      message: 'Datos sincronizados correctamente',
       duration: 2500, color: 'success', position: 'top',
-      cssClass: 'fc-toast',
-      buttons: [{ icon: 'close', role: 'cancel' }]
+      cssClass: 'fc-toast'
     });
     t.present();
   }
@@ -125,8 +123,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     const t = await this.toast.create({
       message: 'Hasta luego, ' + this.usuario,
       duration: 1500, color: 'medium', position: 'top',
-      cssClass: 'fc-toast',
-      buttons: [{ icon: 'close', role: 'cancel' }]
+      cssClass: 'fc-toast'
     });
     await t.present();
     setTimeout(() => {

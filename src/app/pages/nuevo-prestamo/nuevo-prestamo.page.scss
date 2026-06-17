@@ -143,9 +143,12 @@
   .suf-txt { font-size:11px;color:#94a3b8;white-space:nowrap; }
   .ico-pre { color:#94a3b8;font-size:16px;flex-shrink:0; }
   .fc-inp {
-    --background:transparent;--color:#0d2252;
-    --placeholder-color:#cbd5e1;
+    --background:transparent;
+    --color:#0d2252;
+    --placeholder-color:#94a3b8;
+    --placeholder-opacity:1;
     --padding-top:11px;--padding-bottom:11px;--padding-start:0;
+    color:#0d2252 !important;
     font-size:14px;font-weight:700;flex:1;
   }
 }
@@ -257,9 +260,12 @@ ion-modal.cli-modal {
   &:focus-within { border-color:#1a56db;box-shadow:0 0 0 3px rgba(26,86,219,0.08); }
   ion-icon { color:#94a3b8;font-size:18px;flex-shrink:0; }
   .ms-inp {
-    --background:transparent;--color:#0d2252;
-    --placeholder-color:#cbd5e1;
+    --background:transparent;
+    --color:#0d2252;
+    --placeholder-color:#94a3b8;
+    --placeholder-opacity:1;
     --padding-top:11px;--padding-bottom:11px;--padding-start:0;
+    color:#0d2252 !important;
     font-size:14px;font-weight:600;flex:1;
   }
   .ms-clear { color:#cbd5e1;font-size:18px;cursor:pointer; &:active { color:#64748b; } }
@@ -332,21 +338,4 @@ ion-modal.cli-modal {
   box-shadow:0 4px 14px rgba(26,86,219,0.35);
   ion-icon { font-size:18px; }
   &:active { transform: scale(0.98); }
-}
-
-/* ─── FIX: texto visible en todos los inputs ─── */
-.fc-inp::part(native) {
-  color: #0d2252 !important;
-  -webkit-text-fill-color: #0d2252 !important;
-  background: transparent !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
-  caret-color: #1a56db !important;
-}
-/* Fix para el buscador del modal */
-.ms-inp::part(native) {
-  color: #0d2252 !important;
-  -webkit-text-fill-color: #0d2252 !important;
-  background: transparent !important;
-  font-size: 14px !important;
 }

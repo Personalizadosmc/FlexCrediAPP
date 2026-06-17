@@ -2,11 +2,10 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { IonContent, IonIcon, IonInput, IonRippleEffect, LoadingController } from '@ionic/angular/standalone';
+import { IonContent, IonIcon, IonInput, IonRippleEffect, ToastController, LoadingController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { arrowBackOutline, personOutline, cardOutline, callOutline, locationOutline, checkmarkCircleOutline } from 'ionicons/icons';
 import { DataService } from '../../services/data.service';
-import { ToastService } from '../../services/toast.service';
 import { Cliente } from '../../models';
 
 @Component({
@@ -19,21 +18,22 @@ import { Cliente } from '../../models';
 export class NuevoClientePage {
   nombre = ''; cedula = ''; telefono = ''; direccion = '';
 
-  constructor(
-    private data: DataService,
-    private router: Router,
-    private toastSvc: ToastService,
-    private loading: LoadingController
-  ) {
+  constructor(private data: DataService, private router: Router,
+    private toast: ToastController, private loading: LoadingController) {
     addIcons({ arrowBackOutline, personOutline, cardOutline, callOutline, locationOutline, checkmarkCircleOutline });
   }
 
   goBack() { this.router.navigate(['/clientes']); }
 
   async guardar() {
-    if (!this.nombre.trim() || !this.cedula.trim() || !this.telefono.trim())
-      return this.toastSvc.warning('Nombre, cédula y teléfono son obligatorios');
-
+    if (!this.nombre.trim() || !this.cedula.trim() || !this.telefono.trim()) {
+      const t = await this.toast.create({
+        message: 'Nombre, cédula y teléfono son obligatorios',
+        duration: 2500, color: 'warning', position: 'top',
+        cssClass: 'fc-toast'
+      });
+      return t.present();
+    }
     const load = await this.loading.create({ message: 'Guardando cliente...', spinner: 'crescent' });
     await load.present();
     const c: Cliente = {
@@ -44,7 +44,12 @@ export class NuevoClientePage {
     };
     this.data.agregarCliente(c);
     await load.dismiss();
-    await this.toastSvc.success(`Cliente "${c.nombre}" registrado correctamente`);
+    const t = await this.toast.create({
+      message: 'Cliente registrado correctamente',
+      duration: 2200, color: 'success', position: 'top',
+      cssClass: 'fc-toast'
+    });
+    await t.present();
     this.router.navigateByUrl('/clientes');
   }
 }

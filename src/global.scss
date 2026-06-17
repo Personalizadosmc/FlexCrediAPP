@@ -14,94 +14,265 @@
 * { box-sizing: border-box; }
 body { font-family: 'Nunito', sans-serif; }
 
-/* ══════════════════════════════════════════════════════════════
-   ANIMACIONES GLOBALES
-══════════════════════════════════════════════════════════════ */
-@keyframes fadeUp   { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-@keyframes fadeIn   { from{opacity:0} to{opacity:1} }
-@keyframes slideDown{ from{opacity:0;transform:translateY(-24px) scale(0.95)} to{opacity:1;transform:translateY(0) scale(1)} }
-@keyframes popIn    { 0%{opacity:0;transform:scale(0.80)} 60%{transform:scale(1.04)} 100%{opacity:1;transform:scale(1)} }
+@keyframes fadeUp  { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeIn  { from { opacity:0; } to { opacity:1; } }
+@keyframes toastIn {
+  0%   { opacity:0; transform:translateY(-30px) scale(0.92); }
+  60%  { opacity:1; transform:translateY(4px) scale(1.02); }
+  100% { opacity:1; transform:translateY(0) scale(1); }
+}
 
-/* ══════════════════════════════════════════════════════════════
-   TOAST BASE — fc-toast
-   Estrategia: variables CSS + ::part() + clases por tipo
-   Esto garantiza que funcione sin importar la versión de Ionic
-══════════════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════════
+   🎨 ESTILO UNIFICADO GLASSMORPHISM PARA TODOS LOS INPUTS
+   Reemplaza los textbox negros/invisibles del móvil con el estilo
+   azul translúcido elegante que el usuario solicitó.
+   Se aplica globalmente para garantizar consistencia.
+════════════════════════════════════════════════════════════════ */
+
+/* ─── Cajas contenedoras de input (glass) ─── */
+.inp-box,
+.input-field,
+.modal-search,
+.search-bar,
+.search-box {
+  background: rgba(255, 255, 255, 0.10) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.22) !important;
+  border-radius: 12px !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.2s ease !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08) !important;
+
+  &:focus-within {
+    background: rgba(255, 255, 255, 0.16) !important;
+    border-color: rgba(252, 211, 77, 0.55) !important;
+    box-shadow: 0 0 0 3px rgba(252, 211, 77, 0.12),
+                inset 0 1px 0 rgba(255,255,255,0.12) !important;
+  }
+}
+
+/* ─── Variante CLARA — para formularios sobre fondo blanco
+       (nuevo-cliente, nuevo-prestamo) ─── */
+.np-body .inp-box,
+.nc-body .inp-box,
+.modal-wrap .modal-search {
+  background: rgba(13, 34, 82, 0.04) !important;
+  border: 1.5px solid rgba(13, 34, 82, 0.12) !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+
+  &:focus-within {
+    background: rgba(13, 34, 82, 0.06) !important;
+    border-color: #1a56db !important;
+    box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.10) !important;
+  }
+}
+
+/* ─── Iconos dentro de los inputs ─── */
+.inp-box > ion-icon:not(.fc-inp),
+.input-field > ion-icon,
+.modal-search > ion-icon:not(.ms-clear),
+.search-bar > ion-icon,
+.search-box > ion-icon {
+  color: rgba(255, 255, 255, 0.55) !important;
+  font-size: 17px !important;
+  flex-shrink: 0;
+}
+.np-body .inp-box > ion-icon,
+.nc-body .inp-box > ion-icon,
+.modal-wrap .modal-search > ion-icon:not(.ms-clear) {
+  color: #94a3b8 !important;
+}
+
+/* ─── TEXTO DENTRO de los inputs — BLANCO en glass, AZUL en claro ─── */
+
+/* Estilo BASE (oscuro/glass) — texto blanco */
+ion-input.fc-inp,
+ion-input.clean-input,
+ion-input.sr-inp,
+ion-input.s-inp,
+ion-input.ms-inp {
+  --background: transparent !important;
+  --color: #ffffff !important;
+  --placeholder-color: rgba(255, 255, 255, 0.55) !important;
+  --placeholder-opacity: 1 !important;
+  --padding-top: 13px !important;
+  --padding-bottom: 13px !important;
+  --padding-start: 4px !important;
+  --padding-end: 4px !important;
+  color: #ffffff !important;
+  font-family: 'Nunito', sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  caret-color: #fcd34d !important;
+  flex: 1;
+}
+
+/* Forzar el shadow DOM nativo (Ionic 7+) — clave para que se vea en móvil */
+ion-input.fc-inp::part(native),
+ion-input.clean-input::part(native),
+ion-input.sr-inp::part(native),
+ion-input.s-inp::part(native),
+ion-input.ms-inp::part(native) {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: transparent !important;
+  caret-color: #fcd34d !important;
+  opacity: 1 !important;
+  font-weight: 600 !important;
+}
+
+/* VARIANTE CLARA — inputs sobre fondo blanco
+   (formularios de nuevo-cliente, nuevo-prestamo, modal cliente) */
+.np-body ion-input.fc-inp,
+.nc-body ion-input.fc-inp,
+.modal-wrap ion-input.ms-inp {
+  --color: #0d2252 !important;
+  --placeholder-color: #94a3b8 !important;
+  color: #0d2252 !important;
+}
+.np-body ion-input.fc-inp::part(native),
+.nc-body ion-input.fc-inp::part(native),
+.modal-wrap ion-input.ms-inp::part(native) {
+  color: #0d2252 !important;
+  -webkit-text-fill-color: #0d2252 !important;
+  caret-color: #1a56db !important;
+}
+
+/* Inputs nativos (input HTML por si acaso) */
+.inp-box input,
+.input-field input,
+.modal-search input,
+.search-bar input,
+.search-box input {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: transparent !important;
+  caret-color: #fcd34d !important;
+  border: none !important;
+  outline: none !important;
+}
+.np-body .inp-box input,
+.nc-body .inp-box input,
+.modal-wrap .modal-search input {
+  color: #0d2252 !important;
+  -webkit-text-fill-color: #0d2252 !important;
+  caret-color: #1a56db !important;
+}
+
+/* Autofill — eliminar el fondo amarillo/blanco de Chrome/Safari móvil */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #ffffff !important;
+  -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+  transition: background-color 9999s ease-out, color 9999s ease-out !important;
+  caret-color: #fcd34d !important;
+}
+.np-body input:-webkit-autofill,
+.nc-body input:-webkit-autofill,
+.modal-wrap input:-webkit-autofill {
+  -webkit-text-fill-color: #0d2252 !important;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   🔔 TOAST MINIMALISTA — fc-toast (píldora elegante)
+   Sin caja grande. Sin iconos. Solo texto coloreado sobre píldora
+   oscura con desenfoque. Inspirado en Linear / Slack / Notion.
+════════════════════════════════════════════════════════════════ */
+
 ion-toast.fc-toast {
-  --border-radius: 18px;
-  --box-shadow: 0 16px 48px rgba(0,0,0,0.28);
+  --background: rgba(15, 23, 42, 0.95);
+  --color: #ffffff;
+  --border-radius: 999px;
+  --box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+  --border-width: 0;
   --max-width: 90%;
-  --start: 5%;
-  --end: 5%;
-  --min-height: 62px;
+  --width: auto;
+  --min-height: 0;
+  --start: auto;
+  --end: auto;
+  animation: toastIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
 
   &::part(container) {
-    border-radius: 18px;
-    min-height: 62px;
-    padding: 0 6px;
+    border-radius: 999px !important;
+    padding: 0 !important;
+    min-height: 0 !important;
     align-items: center;
+    background: rgba(15, 23, 42, 0.94) !important;
+    overflow: hidden;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    width: auto !important;
+    display: inline-flex !important;
   }
+
   &::part(message) {
     font-family: 'Nunito', sans-serif !important;
-    font-size: 14px !important;
-    font-weight: 800 !important;
-    line-height: 1.4 !important;
-    padding: 0 4px !important;
+    font-size: 13.5px !important;
+    font-weight: 700 !important;
+    line-height: 1.3 !important;
+    padding: 11px 22px !important;
+    letter-spacing: 0.2px !important;
     color: #ffffff !important;
+    white-space: nowrap !important;
+    text-align: center !important;
   }
-  &::part(icon) {
-    font-size: 22px !important;
-    margin-inline-end: 2px !important;
+
+  /* Sin iconos */
+  &::part(icon) { display: none !important; width: 0 !important; height: 0 !important; }
+
+  /* Sin botón de cerrar — limpio */
+  &::part(button) { display: none !important; }
+}
+
+/* ───────── SUCCESS — verde ───────── */
+ion-toast.fc-toast[color="success"] {
+  --background: rgba(6, 78, 59, 0.95);
+  &::part(container) {
+    background: rgba(6, 78, 59, 0.95) !important;
+    box-shadow: 0 8px 28px rgba(16, 185, 129, 0.30),
+                inset 0 0 0 1px rgba(110, 231, 183, 0.30) !important;
   }
-  &::part(button) {
-    color: rgba(255,255,255,0.75) !important;
-    font-size: 20px !important;
+  &::part(message) { color: #d1fae5 !important; }
+}
+
+/* ───────── DANGER — rojo ───────── */
+ion-toast.fc-toast[color="danger"] {
+  --background: rgba(127, 29, 29, 0.95);
+  &::part(container) {
+    background: rgba(127, 29, 29, 0.95) !important;
+    box-shadow: 0 8px 28px rgba(239, 68, 68, 0.30),
+                inset 0 0 0 1px rgba(252, 165, 165, 0.30) !important;
   }
+  &::part(message) { color: #fee2e2 !important; }
 }
 
-/* ── SUCCESS ── */
-ion-toast.fc-toast-success {
-  --background: #059669;
-  --color: #ffffff;
-  &::part(container) { background: #059669; }
-  &::part(message)   { color: #ffffff !important; }
-  &::part(icon)      { color: #ffffff !important; }
-  &::part(button)    { color: rgba(255,255,255,0.75) !important; }
+/* ───────── WARNING — ámbar ───────── */
+ion-toast.fc-toast[color="warning"] {
+  --background: rgba(120, 53, 15, 0.95);
+  &::part(container) {
+    background: rgba(120, 53, 15, 0.95) !important;
+    box-shadow: 0 8px 28px rgba(245, 158, 11, 0.30),
+                inset 0 0 0 1px rgba(253, 230, 138, 0.30) !important;
+  }
+  &::part(message) { color: #fef3c7 !important; }
 }
 
-/* ── DANGER ── */
-ion-toast.fc-toast-danger {
-  --background: #dc2626;
-  --color: #ffffff;
-  &::part(container) { background: #dc2626; }
-  &::part(message)   { color: #ffffff !important; }
-  &::part(icon)      { color: #ffffff !important; }
-  &::part(button)    { color: rgba(255,255,255,0.75) !important; }
+/* ───────── MEDIUM — azul ───────── */
+ion-toast.fc-toast[color="medium"] {
+  --background: rgba(13, 34, 82, 0.95);
+  &::part(container) {
+    background: rgba(13, 34, 82, 0.95) !important;
+    box-shadow: 0 8px 28px rgba(26, 86, 219, 0.30),
+                inset 0 0 0 1px rgba(147, 197, 253, 0.30) !important;
+  }
+  &::part(message) { color: #dbeafe !important; }
 }
 
-/* ── WARNING ── */
-ion-toast.fc-toast-warning {
-  --background: #b45309;
-  --color: #ffffff;
-  &::part(container) { background: #b45309; }
-  &::part(message)   { color: #ffffff !important; }
-  &::part(icon)      { color: #ffffff !important; }
-  &::part(button)    { color: rgba(255,255,255,0.75) !important; }
-}
-
-/* ── INFO / MEDIUM ── */
-ion-toast.fc-toast-info {
-  --background: #1e293b;
-  --color: #ffffff;
-  &::part(container) { background: #1e293b; }
-  &::part(message)   { color: #ffffff !important; }
-  &::part(icon)      { color: #ffffff !important; }
-  &::part(button)    { color: rgba(255,255,255,0.75) !important; }
-}
-
-/* ══════════════════════════════════════════════════════════════
+/* ════════════════════════════════════════════════════════════════
    ALERT PROFESIONAL — fc-alert
-══════════════════════════════════════════════════════════════ */
+════════════════════════════════════════════════════════════════ */
 ion-alert.fc-alert {
   --backdrop-opacity: 0.58;
 
@@ -113,78 +284,114 @@ ion-alert.fc-alert {
     background: #ffffff !important;
     box-shadow: 0 28px 70px rgba(13,34,82,0.35) !important;
     padding: 0 !important;
-    animation: popIn .3s ease both !important;
   }
+
   .alert-head {
-    background: linear-gradient(135deg,#0d2252 0%,#1a56db 100%) !important;
+    background: linear-gradient(135deg, #0d2252 0%, #1a56db 100%) !important;
     padding: 20px 22px 14px !important;
     text-align: center !important;
   }
   .alert-title {
-    font-family:'Montserrat',sans-serif !important;
-    font-size:17px !important;font-weight:900 !important;
-    color:#ffffff !important;letter-spacing:.3px !important;
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 17px !important;
+    font-weight: 900 !important;
+    color: #ffffff !important;
+    letter-spacing: .3px !important;
   }
   .alert-sub-title {
-    font-family:'Nunito',sans-serif !important;
-    font-size:13px !important;font-weight:700 !important;
-    color:#fcd34d !important;margin-top:4px !important;
+    font-family: 'Nunito', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: #fcd34d !important;
+    margin-top: 4px !important;
   }
+
   .alert-message {
-    white-space:pre-line !important;
-    font-family:'Nunito',sans-serif !important;
-    font-size:14px !important;font-weight:700 !important;
-    color:#334155 !important;line-height:1.7 !important;
-    padding:20px 22px 14px !important;
-    text-align:center !important;background:#ffffff !important;
+    white-space: pre-line !important;
+    font-family: 'Nunito', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: #334155 !important;
+    line-height: 1.7 !important;
+    padding: 20px 22px 14px !important;
+    text-align: center !important;
+    background: #ffffff !important;
   }
+
   .alert-button-group {
-    display:flex !important;gap:8px !important;
-    padding:8px 16px 18px !important;background:#ffffff !important;
+    display: flex !important;
+    gap: 8px !important;
+    padding: 8px 16px 18px !important;
+    background: #ffffff !important;
   }
+
   .alert-button {
-    flex:1 !important;border-radius:12px !important;height:48px !important;
-    font-family:'Montserrat',sans-serif !important;
-    font-size:13px !important;font-weight:900 !important;
-    text-transform:none !important;margin:0 !important;
-    border:none !important;opacity:1 !important;
-    &:active { transform:scale(0.97) !important; }
+    flex: 1 !important;
+    border-radius: 12px !important;
+    height: 48px !important;
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 900 !important;
+    letter-spacing: .3px !important;
+    text-transform: none !important;
+    margin: 0 !important;
+    border: none !important;
+    opacity: 1 !important;
+    transition: transform .15s !important;
+    &:active { transform: scale(0.97) !important; }
   }
+
   .alert-button.fc-alert-cancel {
-    background:#e2e8f0 !important;
-    .alert-button-inner { color:#475569 !important;justify-content:center !important; }
+    background: #e2e8f0 !important;
+    .alert-button-inner { color: #475569 !important; justify-content: center !important; }
   }
   .alert-button.fc-alert-confirm {
-    background:#1a56db !important;
-    box-shadow:0 5px 16px rgba(26,86,219,0.45) !important;
-    .alert-button-inner { color:#ffffff !important;justify-content:center !important; }
+    background: #1a56db !important;
+    box-shadow: 0 5px 16px rgba(26,86,219,0.45) !important;
+    .alert-button-inner { color: #ffffff !important; justify-content: center !important; }
   }
   .alert-button.fc-alert-danger {
-    background:#dc2626 !important;
-    box-shadow:0 5px 16px rgba(220,38,38,0.40) !important;
-    .alert-button-inner { color:#ffffff !important;justify-content:center !important; }
+    background: #dc2626 !important;
+    box-shadow: 0 5px 16px rgba(220,38,38,0.40) !important;
+    .alert-button-inner { color: #ffffff !important; justify-content: center !important; }
   }
 }
 
-/* ══════════════════════════════════════════════════════════════
+/* ════════════════════════════════════════════════════════════════
    LOADING
-══════════════════════════════════════════════════════════════ */
+════════════════════════════════════════════════════════════════ */
 ion-loading {
   --backdrop-opacity: 0.50;
   .loading-wrapper {
-    border-radius:18px !important;
-    box-shadow:0 20px 50px rgba(13,34,82,0.28) !important;
+    border-radius: 18px !important;
+    box-shadow: 0 20px 50px rgba(13,34,82,0.28) !important;
   }
   .loading-content {
-    font-family:'Nunito',sans-serif !important;
-    font-weight:700 !important;color:#1e293b !important;
+    font-family: 'Nunito', sans-serif !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
   }
 }
 
 /* Scrollbar */
-::-webkit-scrollbar { width:4px;height:4px; }
-::-webkit-scrollbar-thumb { background:rgba(26,86,219,0.18);border-radius:99px; }
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-thumb { background: rgba(26,86,219,0.18); border-radius: 99px; }
 
 /* Modal */
-ion-modal { --background:transparent; }
-ion-modal::part(handle) { background:#cbd5e1; }
+ion-modal { --background: transparent; }
+ion-modal::part(handle) { background: #cbd5e1; }
+
+/* ════════════════════════════════════════════════════════════════
+   📄 ESTILOS DE IMPRESIÓN — Factura profesional
+════════════════════════════════════════════════════════════════ */
+@media print {
+  body * { visibility: hidden !important; }
+  #fc-factura-print, #fc-factura-print * { visibility: visible !important; }
+  #fc-factura-print {
+    position: absolute !important;
+    top: 0 !important; left: 0 !important;
+    width: 100% !important;
+    background: #ffffff !important;
+  }
+  .tab-bar, ion-fab, .rp-footer { display: none !important; }
+}

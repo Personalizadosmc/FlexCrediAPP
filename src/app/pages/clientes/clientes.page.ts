@@ -53,9 +53,8 @@ export class ClientesPage implements OnInit {
           this.cargar();
           this.toast.create({
             message: 'Cliente eliminado correctamente',
-            duration: 2000, color: 'medium', position: 'top',
-            cssClass: 'fc-toast',
-            buttons: [{ icon: 'close', role: 'cancel' }]
+            duration: 2200, color: 'success', position: 'top',
+            cssClass: 'fc-toast'
           }).then(t => t.present());
         }}
       ]
