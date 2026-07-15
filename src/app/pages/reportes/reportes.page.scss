@@ -17,9 +17,12 @@
 .kl{font-size:9px;color:#94a3b8;font-weight:700;margin:2px 0 0}
 .chart-card,.ops-card,.freq-card{background:white;border-radius:16px;padding:14px;box-shadow:0 3px 14px rgba(26,86,219,0.07)}
 .chart-title,.ops-title{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:900;color:#0d2252;margin:0 0 12px}
-.bars-wrap{display:flex;align-items:flex-end;gap:6px;height:80px}
+.chart-heading{display:flex;flex-direction:column;margin-bottom:10px;.chart-title{margin-bottom:8px}}
+.chart-legend{display:flex;flex-wrap:wrap;gap:7px 12px;font-size:8px;font-weight:800;color:#64748b;span{display:flex;align-items:center;gap:4px}i{width:7px;height:7px;border-radius:50%;display:inline-block;&.blue{background:#1a56db}&.gold{background:#f59e0b}&.green{background:#10b981}}}
+.bars-wrap{display:flex;align-items:flex-end;gap:5px;height:116px;border-bottom:1px solid #e2e8f0;padding-top:8px}
 .bar-col{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1}
-.bar{width:100%;border-radius:5px 5px 0 0;background:linear-gradient(180deg,#3b82f6,#1a56db);min-height:4px;transition:height .4s;&.gold{background:linear-gradient(180deg,#fcd34d,#f59e0b)}}
+.bar-stack{width:min(100%,26px);height:92px;display:flex;flex-direction:column;justify-content:flex-end;filter:drop-shadow(0 2px 3px rgba(15,35,82,.12))}
+.bar-segment{width:100%;min-height:2px;transition:height .35s ease;&:first-child{border-radius:5px 5px 0 0}&.blue{background:linear-gradient(180deg,#3b82f6,#1a56db)}&.gold{background:linear-gradient(180deg,#fcd34d,#f59e0b)}&.green{background:linear-gradient(180deg,#34d399,#059669)}}
 .bar-lbl{font-size:8px;color:#94a3b8;font-weight:700}
 .chart-empty{padding:16px;text-align:center;p{color:#94a3b8;font-size:12px}}
 .op-empty{display:flex;flex-direction:column;align-items:center;padding:16px;ion-icon{font-size:32px;color:#cbd5e1}p{color:#94a3b8;font-size:12px;margin-top:8px}}

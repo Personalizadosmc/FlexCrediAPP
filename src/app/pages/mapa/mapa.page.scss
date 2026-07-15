@@ -1,0 +1,124 @@
+/* ═══════════════════════════════════════════════
+   MAPA CON LEAFLET
+═══════════════════════════════════════════════ */
+
+/* IMPORTAR CSS DE LEAFLET */
+@import "leaflet/dist/leaflet.css";
+
+:host { --page-bg: #f4f6fb; }
+
+.map-content {
+  --background: var(--page-bg);
+  --padding-bottom: 66px;
+}
+
+/* HEADER */
+.map-header {
+  background: linear-gradient(135deg, #0d2252 0%, #1a3574 100%);
+  padding: 48px 16px 14px;
+  color: white;
+  position: relative; z-index: 10;
+}
+.map-topbar { display: flex; align-items: center; gap: 12px; }
+.map-topbar > div:nth-child(2) { flex: 1; }
+.map-title { margin: 0; font-size: 20px; font-weight: 800; }
+.map-sub   { margin: 2px 0 0; font-size: 12px; opacity: 0.8; }
+
+.back-btn {
+  width: 40px; height: 40px; border-radius: 12px; border: none;
+  background: rgba(255,255,255,0.12); color: white;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden; cursor: pointer;
+  ion-icon { font-size: 22px; }
+}
+
+/* Badge conectividad */
+.net-badge {
+  --padding-start: 10px; --padding-end: 10px;
+  font-size: 10px; font-weight: 800; letter-spacing: 0.3px;
+  border-radius: 20px;
+  display: inline-flex; align-items: center; gap: 4px;
+  ion-icon { font-size: 12px; }
+  &.online  { --background: #10b981; --color: white; }
+  &.offline { --background: #ef4444; --color: white; }
+}
+
+.info-bar {
+  margin-top: 10px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 10px; padding: 8px 12px;
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600;
+  ion-icon { font-size: 14px; color: #fcd34d; }
+}
+
+/* MAPA */
+.map-wrap {
+  position: relative;
+  height: calc(100vh - 260px);
+  min-height: 400px;
+  margin: 0;
+}
+.leaflet-container {
+  width: 100%; height: 100%;
+  z-index: 1;
+  background: #dbeafe;
+}
+
+/* LOADING OVERLAY */
+.loading-overlay {
+  position: absolute; inset: 0;
+  background: rgba(13,34,82,0.6); backdrop-filter: blur(6px);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 14px; z-index: 500;
+  ion-spinner { width: 44px; height: 44px; }
+  p { color: white; font-weight: 600; margin: 0; }
+}
+
+/* LEYENDA */
+.legend {
+  background: white;
+  padding: 10px 16px;
+  display: flex; justify-content: space-around;
+  border-top: 1px solid #e2e8f0;
+  z-index: 5;
+}
+.lg-item {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 600; color: #64748b;
+}
+.lg-dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  &.me         { background: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.3); }
+  &.cli        { background: #64748b; }
+  &.cli-active { background: #f59e0b; }
+}
+
+/* FAB ubicación */
+.loc-fab {
+  margin-bottom: 78px !important;
+  ion-fab-button {
+    --box-shadow: 0 4px 14px rgba(245,158,11,0.5);
+  }
+}
+
+/* TAB BAR */
+.tab-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; height: 66px;
+  background: white; border-top: 1px solid #e2e8f0;
+  display: flex; align-items: center; justify-content: space-around;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.05); z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.tab-item {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  gap: 3px; color: #94a3b8; position: relative; padding: 8px 0;
+  cursor: pointer; overflow: hidden;
+  ion-icon { font-size: 22px; }
+  span { font-size: 10px; font-weight: 700; }
+  &.on { color: #0d2252; }
+  .t-dot {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: #f59e0b; position: absolute; bottom: 4px;
+  }
+}

@@ -10,8 +10,11 @@
   <div class="hero" [class.hero-offline]="!(network.state$ | async)?.connected">
     <div class="hero-glow g1"></div><div class="hero-glow g2"></div>
     <div class="hero-top">
-      <div class="brand-logo-wrap">
-        <img src="assets/flex-credi.png" alt="FlexCredi" class="brand-logo-img" />
+      <div class="brand-logo-wrap" aria-label="FlexCredi">
+        <div class="brand-mark">
+          <span class="brand-main">FlexCredi</span>
+          <span class="brand-sub">Préstamos</span>
+        </div>
       </div>
       <div class="hero-actions">
 
@@ -24,11 +27,13 @@
           <span class="net-lbl">Estado de red</span>
         </button>
 
-        <div class="icon-btn ion-activatable" (click)="ir('/recibir-pago')">
+        <button class="icon-btn ion-activatable" type="button" (click)="ir('/recibir-pago')"
+          [attr.aria-label]="reminderCount + ' recordatorios de pago pendientes'"
+          title="Recordatorios de pago">
           <ion-ripple-effect></ion-ripple-effect>
           <ion-icon name="notifications-outline"></ion-icon>
-          <span class="notif-dot" *ngIf="stats.atrasados>0">{{stats.atrasados}}</span>
-        </div>
+          <span class="notif-dot" *ngIf="reminderCount > 0">{{reminderCount > 9 ? '9+' : reminderCount}}</span>
+        </button>
         <div class="icon-btn ion-activatable" (click)="logout()">
           <ion-ripple-effect></ion-ripple-effect>
           <ion-icon name="log-out-outline"></ion-icon>
@@ -81,15 +86,43 @@
         <div class="qico gold"><ion-icon name="card-outline"></ion-icon></div>
         <span>Recibir Pago</span>
       </button>
+      <button class="qbtn ion-activatable" (click)="ir('/historial-pagos')">
+        <ion-ripple-effect></ion-ripple-effect>
+        <div class="qico green"><ion-icon name="receipt-outline"></ion-icon></div>
+        <span>Historial Pagos</span>
+      </button>
       <button class="qbtn ion-activatable" (click)="ir('/clientes')">
         <ion-ripple-effect></ion-ripple-effect>
         <div class="qico blue"><ion-icon name="people-outline"></ion-icon></div>
         <span>Clientes</span>
       </button>
-      <button class="qbtn ion-activatable" (click)="ir('/reportes')">
-        <ion-ripple-effect></ion-ripple-effect>
+      <button class="qbtn" type="button" (click)="abrirReportes($event)">
         <div class="qico red"><ion-icon name="bar-chart-outline"></ion-icon></div>
         <span>Reportes</span>
+      </button>
+    </div>
+
+    <!-- ACCESOS RÁPIDOS A MÓDULOS 1-5 -->
+    <div class="quick-grid modules">
+      <button class="qbtn ion-activatable" (click)="ir('/novedades')">
+        <ion-ripple-effect></ion-ripple-effect>
+        <div class="qico blue"><ion-icon name="newspaper-outline"></ion-icon></div>
+        <span>Novedades</span>
+      </button>
+      <button class="qbtn ion-activatable" (click)="ir('/tareas')">
+        <ion-ripple-effect></ion-ripple-effect>
+        <div class="qico gold"><ion-icon name="list-outline"></ion-icon></div>
+        <span>Tareas</span>
+      </button>
+      <button class="qbtn ion-activatable" (click)="ir('/mapa')">
+        <ion-ripple-effect></ion-ripple-effect>
+        <div class="qico green"><ion-icon name="map-outline"></ion-icon></div>
+        <span>Mapa</span>
+      </button>
+      <button class="qbtn ion-activatable" (click)="ir('/podcasts')">
+        <ion-ripple-effect></ion-ripple-effect>
+        <div class="qico red"><ion-icon name="headset-outline"></ion-icon></div>
+        <span>Podcasts</span>
       </button>
     </div>
 
@@ -136,28 +169,24 @@
   </div>
 </ion-content>
 
-<!-- TAB BAR -->
+<!-- Barra de navegación principal -->
 <div class="tab-bar">
   <div class="tab-item on ion-activatable"><ion-ripple-effect></ion-ripple-effect>
     <ion-icon name="home-outline"></ion-icon><span>Inicio</span><div class="t-dot"></div>
   </div>
-  <div class="tab-item ion-activatable" (click)="ir('/clientes')"><ion-ripple-effect></ion-ripple-effect>
-    <ion-icon name="people-outline"></ion-icon><span>Clientes</span>
+  <div class="tab-item ion-activatable" (click)="ir('/tareas')"><ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="list-outline"></ion-icon><span>Tareas</span>
   </div>
-  <div class="tab-fab"></div>
-  <div class="tab-item ion-activatable" (click)="ir('/recibir-pago')"><ion-ripple-effect></ion-ripple-effect>
-    <ion-icon name="card-outline"></ion-icon><span>Pagos</span>
+  <div class="tab-item ion-activatable" (click)="ir('/novedades')"><ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="newspaper-outline"></ion-icon><span>Novedades</span>
   </div>
-  <div class="tab-item ion-activatable" (click)="ir('/reportes')"><ion-ripple-effect></ion-ripple-effect>
-    <ion-icon name="bar-chart-outline"></ion-icon><span>Reportes</span>
+  <div class="tab-item ion-activatable" (click)="ir('/mapa')"><ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="map-outline"></ion-icon><span>Mapa</span>
+  </div>
+  <div class="tab-item ion-activatable" (click)="ir('/perfil')"><ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="person-outline"></ion-icon><span>Perfil</span>
   </div>
 </div>
-
-<ion-fab vertical="bottom" horizontal="center" slot="fixed" style="margin-bottom:4px">
-  <ion-fab-button class="center-fab" (click)="ir('/nuevo-prestamo')">
-    <ion-icon name="add"></ion-icon>
-  </ion-fab-button>
-</ion-fab>
 
 <!-- ══════════════════════════════════════════
      MODAL ESTADO DE RED

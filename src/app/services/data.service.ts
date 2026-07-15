@@ -19,7 +19,21 @@ export class DataService {
   actualizarCliente(c: Cliente) {
     const l = this.getClientes();
     const i = l.findIndex(x => x.id === c.id);
-    if (i >= 0) { l[i] = c; this.saveClientes(l); }
+    if (i >= 0) {
+      l[i] = c;
+      this.saveClientes(l);
+
+      const prestamos = this.getPrestamos();
+      let actualizados = false;
+      prestamos.forEach(p => {
+        if (p.clienteId !== c.id) return;
+        p.clienteNombre = c.nombre;
+        p.clienteTelefono = c.telefono;
+        p.clienteEmail = c.email || '';
+        actualizados = true;
+      });
+      if (actualizados) this.savePrestamos(prestamos);
+    }
   }
   eliminarCliente(id: string) {
     this.saveClientes(this.getClientes().filter(c => c.id !== id));
@@ -72,9 +86,12 @@ export class DataService {
     const d = localStorage.getItem('fc_pagos');
     return d ? JSON.parse(d) : [];
   }
+  savePagos(lista: Pago[]) {
+    localStorage.setItem('fc_pagos', JSON.stringify(lista));
+  }
   registrarPago(pago: Pago) {
     const pagos = this.getPagos(); pagos.unshift(pago);
-    localStorage.setItem('fc_pagos', JSON.stringify(pagos));
+    this.savePagos(pagos);
     const p = this.getPrestamoById(pago.prestamoId);
     if (p) {
       const c = p.cuotas.find(x => x.numero === pago.cuotaNumero);
@@ -83,6 +100,17 @@ export class DataService {
       if (todas) p.estado = 'completado';
       this.actualizarPrestamo(p);
     }
+  }
+  actualizarPago(pago: Pago) {
+    const pagos = this.getPagos();
+    const idx = pagos.findIndex(p => p.id === pago.id);
+    if (idx >= 0) {
+      pagos[idx] = pago;
+      this.savePagos(pagos);
+    }
+  }
+  eliminarPago(id: string) {
+    this.savePagos(this.getPagos().filter(p => p.id !== id));
   }
 
   // ── CALCULAR CUOTAS ───────────────────────────────────

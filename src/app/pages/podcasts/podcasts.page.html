@@ -1,0 +1,146 @@
+<ion-content class="pod-content" [fullscreen]="true">
+
+  <!-- Audio invisible -->
+  <audio #audioPlayer preload="metadata"></audio>
+
+  <!-- HEADER -->
+  <div class="pod-header">
+    <div class="pod-topbar">
+      <button class="back-btn ion-activatable" (click)="ir('/dashboard')">
+        <ion-ripple-effect></ion-ripple-effect>
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <div>
+        <h2 class="pod-title">Podcasts Financieros</h2>
+        <p class="pod-sub">{{ podcasts.length }} episodios educativos</p>
+      </div>
+      <ion-icon name="headset-outline" class="pod-icon"></ion-icon>
+    </div>
+  </div>
+
+  <div class="pod-body">
+
+    <!-- REPRODUCTOR (visible al reproducir) -->
+    <div class="player-card" *ngIf="reproduciendo">
+      <div class="pl-info">
+        <img [src]="reproduciendo.urlPortada" class="pl-cover" alt=""/>
+        <div class="pl-txt">
+          <p class="pl-cat">{{ reproduciendo.categoria }}</p>
+          <p class="pl-title">{{ reproduciendo.titulo }}</p>
+          <p class="pl-autor">{{ reproduciendo.autor }}</p>
+        </div>
+      </div>
+
+      <!-- Progreso -->
+      <div class="control-label">
+        <span>Progreso</span>
+        <span>{{ formatTime(currentTime) }} / {{ formatTime(duration) }}</span>
+      </div>
+      <div class="pl-progress">
+        <span class="pl-time">{{ formatTime(currentTime) }}</span>
+        <ion-range
+          [(ngModel)]="progreso"
+          (ionChange)="onRangeChange($event)"
+          min="0" max="100" step="1"
+          color="warning"
+          class="pl-range"
+          aria-label="Progreso del episodio">
+        </ion-range>
+        <span class="pl-time">{{ formatTime(duration) }}</span>
+      </div>
+
+      <!-- Controles -->
+      <div class="pl-controls">
+        <button class="ctrl-btn" (click)="anterior()">
+          <ion-icon name="play-skip-back-outline"></ion-icon>
+        </button>
+        <button class="ctrl-btn stop" (click)="stop()">
+          <ion-icon name="stop-outline"></ion-icon>
+        </button>
+        <button class="ctrl-btn play" (click)="togglePlay()">
+          <ion-spinner *ngIf="cargando" name="crescent" color="light"></ion-spinner>
+          <ion-icon *ngIf="!cargando" [name]="isPlaying ? 'pause-outline' : 'play-outline'"></ion-icon>
+        </button>
+        <button class="ctrl-btn" (click)="siguiente()">
+          <ion-icon name="play-skip-forward-outline"></ion-icon>
+        </button>
+      </div>
+
+      <!-- Volumen -->
+      <div class="control-label volume-label">
+        <span>Volumen</span>
+        <span>{{ volumen }}%</span>
+      </div>
+      <div class="pl-volume">
+        <ion-icon name="musical-notes-outline"></ion-icon>
+        <ion-range
+          [(ngModel)]="volumen"
+          (ionChange)="onVolumenChange($event)"
+          min="0" max="100" step="1"
+          color="warning"
+          class="vol-range"
+          aria-label="Volumen del episodio">
+        </ion-range>
+      </div>
+    </div>
+
+    <!-- LISTA DE PODCASTS -->
+    <h3 class="section-title">Todos los episodios</h3>
+    <ion-list lines="none" class="pod-list">
+      <ion-item *ngFor="let p of podcasts"
+                (click)="seleccionar(p)"
+                [class.active]="reproduciendo?.id === p.id"
+                class="pod-item ion-activatable">
+        <ion-ripple-effect></ion-ripple-effect>
+
+        <img [src]="p.urlPortada" slot="start" class="pd-cover" alt=""/>
+
+        <ion-label>
+          <div class="pd-head">
+            <ion-badge class="pd-cat" [style.background]="colorCategoria(p.categoria)+'22'"
+                                      [style.color]="colorCategoria(p.categoria)">
+              {{p.categoria}}
+            </ion-badge>
+            <span class="pd-dur">
+              <ion-icon name="time-outline"></ion-icon>
+              {{p.duracion}}
+            </span>
+          </div>
+          <h3 class="pd-titulo">{{p.titulo}}</h3>
+          <p class="pd-desc">{{p.descripcion}}</p>
+          <p class="pd-autor">{{p.autor}}</p>
+        </ion-label>
+
+        <button class="pd-play" slot="end">
+          <ion-icon [name]="reproduciendo?.id === p.id && isPlaying ? 'pause-outline' : 'play-outline'"></ion-icon>
+        </button>
+      </ion-item>
+    </ion-list>
+
+    <div style="height:100px"></div>
+  </div>
+</ion-content>
+
+<!-- TAB BAR simplificado -->
+<div class="tab-bar">
+  <div class="tab-item ion-activatable" (click)="ir('/dashboard')">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="home-outline"></ion-icon><span>Inicio</span>
+  </div>
+  <div class="tab-item ion-activatable" (click)="ir('/tareas')">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="list-outline"></ion-icon><span>Tareas</span>
+  </div>
+  <div class="tab-item ion-activatable" (click)="ir('/novedades')">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="newspaper-outline"></ion-icon><span>Novedades</span>
+  </div>
+  <div class="tab-item ion-activatable" (click)="ir('/mapa')">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="map-outline"></ion-icon><span>Mapa</span>
+  </div>
+  <div class="tab-item ion-activatable" (click)="ir('/perfil')">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="person-outline"></ion-icon><span>Perfil</span>
+  </div>
+</div>

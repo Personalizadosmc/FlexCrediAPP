@@ -93,9 +93,18 @@
    Solo añadimos atributos que el global no define. */
 .clean-input {
   flex: 1;
+  width: 100%;
+  min-width: 0;
   font-family: 'Nunito', sans-serif;
   font-size: 15px;
   font-weight: 600;
+  --padding-start: 2px;
+  --padding-end: 2px;
+  --highlight-height: 0;
+}
+.clean-input::part(native) {
+  width: 100%;
+  min-width: 0;
 }
 
 .eye-toggle {

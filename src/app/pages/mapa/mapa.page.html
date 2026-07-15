@@ -1,0 +1,89 @@
+<ion-content class="map-content" [fullscreen]="true">
+
+  <!-- HEADER -->
+  <div class="map-header">
+    <div class="map-topbar">
+      <button class="back-btn ion-activatable" (click)="ir('/dashboard')">
+        <ion-ripple-effect></ion-ripple-effect>
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <div>
+        <h2 class="map-title">Mapa de Clientes</h2>
+        <p class="map-sub">{{ clientes.length }} ubicaciones registradas</p>
+      </div>
+
+      <!-- Badge de conectividad -->
+      <ion-badge class="net-badge"
+                 [class.online]="(network.state$ | async)?.connected"
+                 [class.offline]="!(network.state$ | async)?.connected">
+        <ion-icon [name]="(network.state$ | async)?.connected ? 'wifi-outline' : 'cloud-offline-outline'"></ion-icon>
+        {{ (network.state$ | async)?.connected ? 'ONLINE' : 'OFFLINE' }}
+      </ion-badge>
+    </div>
+
+    <!-- Info bar -->
+    <div class="info-bar" *ngIf="miPosicion">
+      <ion-icon name="navigate-outline"></ion-icon>
+      <span>Clientes ubicados: <strong>{{ contarUbicados() }}</strong></span>
+    </div>
+  </div>
+
+  <!-- MAPA -->
+  <div class="map-wrap">
+    <div #mapContainer class="leaflet-container" id="map"></div>
+
+    <!-- LOADING OVERLAY -->
+    <div class="loading-overlay" *ngIf="cargando">
+      <ion-spinner name="crescent" color="warning"></ion-spinner>
+      <p>Obteniendo tu ubicación...</p>
+    </div>
+  </div>
+
+  <!-- LEYENDA -->
+  <div class="legend">
+    <div class="lg-item">
+      <div class="lg-dot me"></div>
+      <span>Mi ubicación</span>
+    </div>
+    <div class="lg-item">
+      <div class="lg-dot cli"></div>
+      <span>Cliente</span>
+    </div>
+    <div class="lg-item">
+      <div class="lg-dot cli-active"></div>
+      <span>Con préstamo</span>
+    </div>
+  </div>
+
+  <!-- FAB de ubicación actual -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="loc-fab">
+    <ion-fab-button (click)="centrarEnMiUbicacion(true)" color="warning">
+      <ion-icon name="locate-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <div class="tab-item ion-activatable" (click)="ir('/dashboard')">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="home-outline"></ion-icon><span>Inicio</span>
+  </div>
+  <div class="tab-item ion-activatable" (click)="ir('/tareas')">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="list-outline"></ion-icon><span>Tareas</span>
+  </div>
+  <div class="tab-item ion-activatable" (click)="ir('/novedades')">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="newspaper-outline"></ion-icon><span>Novedades</span>
+  </div>
+  <div class="tab-item on ion-activatable">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="map-outline"></ion-icon><span>Mapa</span>
+    <div class="t-dot"></div>
+  </div>
+  <div class="tab-item ion-activatable" (click)="ir('/perfil')">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="person-outline"></ion-icon><span>Perfil</span>
+  </div>
+</div>

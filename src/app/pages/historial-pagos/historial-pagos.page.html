@@ -1,0 +1,123 @@
+﻿<ion-content class="hist-content" [fullscreen]="true">
+  <div class="hist-header">
+    <div class="hist-topbar">
+      <button class="back-btn ion-activatable" (click)="ir('/dashboard')">
+        <ion-ripple-effect></ion-ripple-effect>
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <div>
+        <h2>Historial de Pagos</h2>
+        <p>Consulta pagos generales y por cliente</p>
+      </div>
+    </div>
+
+    <div class="hist-stats">
+      <div class="stat-card">
+        <span>Total pagado</span>
+        <strong>{{data.formatMoney(totalGeneral)}}</strong>
+      </div>
+      <div class="stat-card">
+        <span>Registros</span>
+        <strong>{{pagos.length}}</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="hist-body">
+    <div class="seg-tabs">
+      <button [class.on]="vista==='general'" (click)="setVista('general')">
+        <ion-icon name="receipt-outline"></ion-icon>
+        General
+      </button>
+      <button [class.on]="vista==='cliente'" (click)="setVista('cliente')">
+        <ion-icon name="people-outline"></ion-icon>
+        Por cliente
+      </button>
+    </div>
+
+    <div class="search-box">
+      <ion-icon name="search-outline"></ion-icon>
+      <ion-input [placeholder]="vista==='general' ? 'Buscar pago, cliente o préstamo...' : 'Buscar dentro del cliente...'"
+                 [(ngModel)]="busqueda" class="s-inp"></ion-input>
+    </div>
+
+    <div class="client-strip" *ngIf="vista==='cliente'">
+      <button class="client-pill" [class.on]="!clienteId" (click)="seleccionarCliente('')">
+        Todos
+      </button>
+      <button class="client-pill" *ngFor="let c of clientes"
+              [class.on]="clienteId===c.id"
+              (click)="seleccionarCliente(c.id)">
+        {{c.nombre}}
+      </button>
+    </div>
+
+    <div class="summary-line">
+      <span>{{pagosFiltrados.length}} pago(s)</span>
+      <strong>{{data.formatMoney(totalFiltrado)}}</strong>
+    </div>
+
+    <div class="client-summary" *ngIf="vista==='cliente' && clientes.length > 0 && !clienteId">
+      <div class="client-total-card" *ngFor="let c of clientes" (click)="seleccionarCliente(c.id)">
+        <div class="ct-avatar" [style.background]="data.getAvatarColor(c.nombre)">
+          {{data.getIniciales(c.nombre)}}
+        </div>
+        <div>
+          <h3>{{c.nombre}}</h3>
+          <p>{{pagosDeCliente(c.id).length}} pago(s)</p>
+          <small *ngIf="ultimoPagoCliente(c.id)">Último: {{ultimoPagoCliente(c.id) | date:'dd MMM yyyy'}}</small>
+        </div>
+        <strong>{{data.formatMoney(totalCliente(c.id))}}</strong>
+      </div>
+    </div>
+
+    <div class="empty-wrap" *ngIf="pagosFiltrados.length===0">
+      <ion-icon name="receipt-outline"></ion-icon>
+      <p>No hay pagos registrados en esta vista</p>
+    </div>
+
+    <div class="pay-list" *ngIf="vista==='general' || clienteId">
+      <div class="pay-card" *ngFor="let p of pagosFiltrados">
+        <div class="pay-avatar" [style.background]="data.getAvatarColor(p.clienteNombre)">
+          {{data.getIniciales(p.clienteNombre)}}
+        </div>
+        <div class="pay-info">
+          <h3>{{p.clienteNombre}}</h3>
+          <p><ion-icon name="calendar-outline"></ion-icon>{{p.fecha | date:'dd MMM yyyy, hh:mm a'}}</p>
+          <p><ion-icon name="card-outline"></ion-icon>Cuota #{{p.cuotaNumero}} - {{p.prestamoId}}</p>
+          <small *ngIf="prestamoDe(p) as prestamo">{{prestamo.frecuencia | titlecase}} - {{prestamo.estado | titlecase}}</small>
+        </div>
+        <div class="pay-amount">
+          <span>{{data.formatMoney(p.monto)}}</span>
+          <small [class.ok]="p.emailEnviado">Email {{p.emailEnviado ? 'enviado' : 'pendiente'}}</small>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:100px"></div>
+  </div>
+</ion-content>
+
+<div class="tab-bar">
+  <div class="tab-item ion-activatable" (click)="ir('/dashboard')">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="home-outline"></ion-icon><span>Inicio</span>
+  </div>
+  <div class="tab-item ion-activatable" (click)="ir('/tareas')">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="list-outline"></ion-icon><span>Tareas</span>
+  </div>
+  <div class="tab-item ion-activatable" (click)="ir('/novedades')">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="newspaper-outline"></ion-icon><span>Novedades</span>
+  </div>
+  <div class="tab-item ion-activatable" (click)="ir('/mapa')">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="map-outline"></ion-icon><span>Mapa</span>
+  </div>
+  <div class="tab-item on ion-activatable">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="receipt-outline"></ion-icon><span>Pagos</span>
+    <div class="t-dot"></div>
+  </div>
+</div>

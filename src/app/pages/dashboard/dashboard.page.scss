@@ -4,12 +4,13 @@
 .g1{width:280px;height:280px;top:-100px;right:-70px;background:radial-gradient(circle,rgba(26,86,219,0.35),transparent 70%)}
 .g2{width:200px;height:200px;bottom:0;left:-50px;background:radial-gradient(circle,rgba(245,158,11,0.12),transparent 70%)}
 .hero-top{display:flex;justify-content:space-between;align-items:center;padding-top:48px;padding-bottom:14px;position:relative;z-index:1;gap:10px}
-.brand-logo{font-family:'Montserrat',sans-serif;font-size:18px;font-weight:900;.fx{color:#93c5fd}.cr{color:#fcd34d}}
-.brand-logo-wrap{display:flex;align-items:center;height:auto;flex-shrink:0}
-.brand-logo-img{height:90px;width:auto;max-width:230px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.35)) drop-shadow(0 0 18px rgba(96,165,250,0.15));user-select:none;-webkit-user-drag:none;display:block}
+.brand-logo-wrap{display:flex;align-items:center;min-width:0;flex-shrink:1}
+.brand-mark{display:flex;flex-direction:column;gap:1px;line-height:1}
+.brand-main{font-family:'Montserrat',sans-serif;font-size:24px;font-weight:900;color:#fff;letter-spacing:0;text-shadow:0 5px 18px rgba(0,0,0,0.28)}
+.brand-sub{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:1.8px;color:#fcd34d}
 .hero-actions{display:flex;gap:8px}
-.icon-btn{position:relative;width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;transition:background .2s;ion-icon{color:white;font-size:17px}&:active{background:rgba(255,255,255,0.22)}}
-.notif-dot{position:absolute;top:-3px;right:-3px;width:15px;height:15px;border-radius:50%;background:#f59e0b;color:#000;font-size:8px;font-weight:900;display:flex;align-items:center;justify-content:center;border:1.5px solid #0d2252}
+.icon-btn{position:relative;width:38px;height:38px;padding:0;border-radius:11px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.10);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:visible;transition:background .2s;ion-icon{display:block;margin:auto;color:white;font-size:21px}&:active{background:rgba(255,255,255,0.22)}}
+.notif-dot{position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;padding:0 3px;border-radius:9px;background:#f59e0b;color:#0d2252;font-size:8px;line-height:1;font-weight:900;display:flex;align-items:center;justify-content:center;border:2px solid #0d2252;box-sizing:border-box}
 .greeting{display:flex;justify-content:space-between;align-items:center;padding:6px 0 12px;position:relative;z-index:1}
 .hi-sub{font-size:11px;color:rgba(255,255,255,0.5);margin:0}
 .hi-name{font-family:'Montserrat',sans-serif;font-size:20px;font-weight:900;color:white;margin:2px 0 0}
@@ -47,7 +48,6 @@
 .tab-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;position:relative;overflow:hidden;padding:4px 0;ion-icon{font-size:20px;color:#94a3b8;transition:color .2s}span{font-size:9px;color:#94a3b8;font-weight:700;transition:color .2s}&.on{ion-icon{color:#1a56db}span{color:#1a56db;font-weight:900}}&:active{background:rgba(26,86,219,0.04)}}
 .t-dot{width:4px;height:4px;border-radius:50%;background:#f59e0b;margin-top:1px}
 .tab-fab{width:60px}
-.center-fab{--background:linear-gradient(135deg,#1340a0,#1a56db,#3b82f6);--box-shadow:0 8px 24px rgba(26,86,219,0.5)}
 
 /* ══════════════════════════════════════════════════════
    BOTÓN ESTADO DE RED (hero-actions)

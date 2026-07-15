@@ -91,7 +91,8 @@ ion-input.fc-inp,
 ion-input.clean-input,
 ion-input.sr-inp,
 ion-input.s-inp,
-ion-input.ms-inp {
+ion-input.ms-inp,
+ion-select.fc-sel {
   --background: transparent !important;
   --color: #ffffff !important;
   --placeholder-color: rgba(255, 255, 255, 0.55) !important;
@@ -106,6 +107,10 @@ ion-input.ms-inp {
   font-weight: 600 !important;
   caret-color: #fcd34d !important;
   flex: 1;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  display: block !important;
 }
 
 /* Forzar el shadow DOM nativo (Ionic 7+) — clave para que se vea en móvil */
@@ -114,6 +119,11 @@ ion-input.clean-input::part(native),
 ion-input.sr-inp::part(native),
 ion-input.s-inp::part(native),
 ion-input.ms-inp::part(native) {
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+  text-align: left !important;
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
   background: transparent !important;
@@ -126,21 +136,34 @@ ion-input.ms-inp::part(native) {
    (formularios de nuevo-cliente, nuevo-prestamo, modal cliente) */
 .np-body ion-input.fc-inp,
 .nc-body ion-input.fc-inp,
-.modal-wrap ion-input.ms-inp {
+.modal-wrap ion-input.ms-inp,
+.tar-modal ion-input.fc-inp,
+.tar-modal ion-select.fc-sel,
+.edit-modal ion-input.fc-inp {
   --color: #0d2252 !important;
   --placeholder-color: #94a3b8 !important;
+  --placeholder-opacity: 1 !important;
   color: #0d2252 !important;
 }
 .np-body ion-input.fc-inp::part(native),
 .nc-body ion-input.fc-inp::part(native),
-.modal-wrap ion-input.ms-inp::part(native) {
+.modal-wrap ion-input.ms-inp::part(native),
+.tar-modal ion-input.fc-inp::part(native),
+.edit-modal ion-input.fc-inp::part(native) {
   color: #0d2252 !important;
   -webkit-text-fill-color: #0d2252 !important;
   caret-color: #1a56db !important;
 }
 
+ion-select.fc-sel::part(text),
+ion-select.fc-sel::part(placeholder) {
+  color: inherit !important;
+  opacity: 1 !important;
+}
+
 /* Inputs nativos (input HTML por si acaso) */
 .inp-box input,
+.inp-box select,
 .input-field input,
 .modal-search input,
 .search-bar input,
@@ -151,6 +174,10 @@ ion-input.ms-inp::part(native) {
   caret-color: #fcd34d !important;
   border: none !important;
   outline: none !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
 }
 .np-body .inp-box input,
 .nc-body .inp-box input,
@@ -394,4 +421,138 @@ ion-modal::part(handle) { background: #cbd5e1; }
     background: #ffffff !important;
   }
   .tab-bar, ion-fab, .rp-footer { display: none !important; }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   MARCADORES DE LEAFLET
+════════════════════════════════════════════════════════════════ */
+.custom-marker {
+  background: transparent !important;
+  border: none !important;
+}
+.cliente-marker {
+  width: 42px; height: 42px; border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  display: flex; align-items: center; justify-content: center;
+  border: 3px solid white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  position: relative;
+  span {
+    transform: rotate(45deg);
+    color: white; font-weight: 800; font-size: 13px;
+  }
+}
+.marker-badge {
+  position: absolute; top: -6px; right: -6px;
+  transform: rotate(45deg);
+  background: #f59e0b; color: white;
+  min-width: 20px; height: 20px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 800;
+  border: 2px solid white;
+}
+
+.mi-ubicacion-marker { background: transparent !important; border: none !important; }
+.mi-marker-outer {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: rgba(59,130,246,0.25);
+  display: flex; align-items: center; justify-content: center;
+  animation: pulse-me 2s infinite;
+}
+.mi-marker-inner {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: #3b82f6;
+  border: 3px solid white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+@keyframes pulse-me {
+  0%   { box-shadow: 0 0 0 0 rgba(59,130,246,0.5); }
+  70%  { box-shadow: 0 0 0 15px rgba(59,130,246,0); }
+  100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); }
+}
+
+/* Popups Leaflet */
+.leaflet-popup-content-wrapper {
+  border-radius: 14px !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+.leaflet-popup-content { margin: 0 !important; }
+.cli-popup .pop-header {
+  padding: 10px 12px; color: white;
+  display: flex; align-items: center; gap: 10px;
+}
+.pop-av {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 13px;
+}
+.pop-name { margin: 0; font-size: 13px; font-weight: 800; }
+.pop-ced  { margin: 2px 0 0; font-size: 11px; opacity: 0.85; }
+.pop-body {
+  padding: 10px 12px; background: white;
+  p { margin: 4px 0; font-size: 12px; color: #475569; }
+}
+.mi-pop {
+  padding: 8px 12px; background: white; border-radius: 10px;
+  color: #0d2252; font-size: 12px;
+  small { color: #64748b; }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   MODO OSCURO GLOBAL
+════════════════════════════════════════════════════════════════ */
+body.dark-theme {
+  --ion-background-color: #0f172a;
+  --ion-text-color: #f1f5f9;
+  background: #0f172a;
+
+  ion-content { --background: #0f172a !important; }
+  ion-card, .pr-card { background: #1e293b !important; color: #f1f5f9 !important; }
+  .card-title, .info-row .ir-value, .lc-title,
+  h1, h2, h3, .pd-titulo, .ti-titulo, .news-title {
+    color: #f1f5f9 !important;
+  }
+  .info-row .ir-label, .lc-sub, .pd-desc,
+  .ti-desc, .news-text { color: #94a3b8 !important; }
+  .dash-content, .cli-content, .tar-content, .nov-content, .pr-content,
+  .body-card, .cli-body, .tar-body, .pr-body,
+  .nc-body, .np-body { --background: #0f172a !important; background: #0f172a !important; }
+  .tab-bar { background: #1e293b !important; border-top-color: #334155 !important; }
+  .tab-item { color: #64748b; }
+  .tab-item.on { color: #fcd34d !important; }
+  .cc-name, .pc-name, .kpi-lbl { color: #f1f5f9 !important; }
+  .stat-chip, .qbtn, .prest-card, .news-card, .tar-item, .ble-item,
+  .form-card, .client-card, .cli-card {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+    color: #f1f5f9 !important;
+  }
+  .inp-box, .input-field, .search-box, .search-bar {
+    background: rgba(15, 23, 42, .7) !important;
+    border-color: #334155 !important;
+  }
+  ion-input.fc-inp,
+  ion-input.clean-input,
+  ion-select.fc-sel {
+    --color: #f8fafc !important;
+    --placeholder-color: #94a3b8 !important;
+    color: #f8fafc !important;
+  }
+  ion-input.fc-inp::part(native),
+  ion-input.clean-input::part(native) {
+    color: #f8fafc !important;
+    -webkit-text-fill-color: #f8fafc !important;
+  }
+}
+
+app-tabs ion-content {
+  --padding-bottom: 0;
+}
+
+/* La navegación visible es el ion-tab-bar real. Las barras antiguas de cada
+   página se conservan solo como respaldo de diseño, pero no se muestran. */
+app-tabs .tab-bar {
+  display: none !important;
 }

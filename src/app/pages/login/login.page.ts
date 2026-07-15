@@ -7,7 +7,7 @@ import {
   ToastController, AlertController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { eyeOutline, eyeOffOutline, mailOutline, lockClosedOutline, personOutline } from 'ionicons/icons';
+import { eyeOutline, eyeOffOutline, mailOutline, lockClosedOutline, personOutline, businessOutline } from 'ionicons/icons';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -19,7 +19,7 @@ import { AuthService } from '../../services/auth.service';
 })
 export class LoginPage {
   modo: 'login' | 'registro' = 'login';
-  email = ''; password = ''; nombre = ''; confirmPass = '';
+  email = ''; password = ''; nombre = ''; confirmPass = ''; nombreEmpresa = '';
   showPass = false; loadingState = false;
 
   constructor(
@@ -28,7 +28,7 @@ export class LoginPage {
     private toast: ToastController,
     private alert: AlertController
   ) {
-    addIcons({ eyeOutline, eyeOffOutline, mailOutline, lockClosedOutline, personOutline });
+    addIcons({ eyeOutline, eyeOffOutline, mailOutline, lockClosedOutline, personOutline, businessOutline });
   }
 
   async onLogin() {
@@ -64,12 +64,12 @@ export class LoginPage {
 
     this.loadingState = true;
     setTimeout(() => {
-      const r = this.auth.registrar(this.nombre.trim(), this.email.trim(), this.password);
+      const r = this.auth.registrar(this.nombre.trim(), this.email.trim(), this.password, this.nombreEmpresa.trim());
       this.loadingState = false;
       if (r.ok) {
         this.showToast('¡Cuenta creada! Ahora inicia sesión', 'success');
         this.modo = 'login';
-        this.password = ''; this.confirmPass = ''; this.nombre = '';
+        this.password = ''; this.confirmPass = ''; this.nombre = ''; this.nombreEmpresa = '';
       } else {
         this.showToast(r.msg, 'danger');
       }

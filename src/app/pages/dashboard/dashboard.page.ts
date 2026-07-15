@@ -2,21 +2,24 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import {
-  IonContent, IonIcon, IonFab, IonFabButton, IonRippleEffect,
-  ToastController
+  IonContent, IonIcon, IonRippleEffect,
+  NavController, ToastController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
-  notificationsOutline, logOutOutline, add, homeOutline,
+  notificationsOutline, logOutOutline, homeOutline,
   peopleOutline, cardOutline, barChartOutline, addCircleOutline,
   timeOutline, wifiOutline, cloudOfflineOutline, closeOutline,
   cellularOutline, layersOutline, shieldCheckmarkOutline,
-  syncOutline, informationCircleOutline
+  syncOutline, informationCircleOutline,
+  listOutline, newspaperOutline, mapOutline, personOutline,
+  headsetOutline, receiptOutline
 } from 'ionicons/icons';
 import { Subscription } from 'rxjs';
 import { AuthService }    from '../../services/auth.service';
 import { DataService }    from '../../services/data.service';
 import { NetworkService } from '../../services/network.service';
+import { ReminderService } from '../../services/reminder.service';
 import { Prestamo }       from '../../models';
 
 @Component({
@@ -24,7 +27,7 @@ import { Prestamo }       from '../../models';
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
   standalone: true,
-  imports: [CommonModule, DatePipe, IonContent, IonIcon, IonFab, IonFabButton, IonRippleEffect],
+  imports: [CommonModule, DatePipe, IonContent, IonIcon, IonRippleEffect],
 })
 export class DashboardPage implements OnInit, OnDestroy {
   usuario = ''; iniciales = '';
@@ -35,6 +38,7 @@ export class DashboardPage implements OnInit, OnDestroy {
   // Modal de red
   redModalOpen = false;
   pendingCount  = 0;
+  reminderCount = 0;
 
   private netSub: Subscription | null = null;
 
@@ -42,15 +46,19 @@ export class DashboardPage implements OnInit, OnDestroy {
     private auth: AuthService,
     public  data: DataService,
     public  network: NetworkService,
+    private reminders: ReminderService,
     private router: Router,
+    private navController: NavController,
     private toast: ToastController
   ) {
     addIcons({
-      notificationsOutline, logOutOutline, add, homeOutline,
+      notificationsOutline, logOutOutline, homeOutline,
       peopleOutline, cardOutline, barChartOutline, addCircleOutline,
       timeOutline, wifiOutline, cloudOfflineOutline, closeOutline,
       cellularOutline, layersOutline, shieldCheckmarkOutline,
-      syncOutline, informationCircleOutline
+      syncOutline, informationCircleOutline,
+      listOutline, newspaperOutline, mapOutline, personOutline,
+      headsetOutline, receiptOutline
     });
   }
 
@@ -85,6 +93,7 @@ export class DashboardPage implements OnInit, OnDestroy {
 
   cargar() {
     this.stats = this.data.getStats();
+    this.reminderCount = this.reminders.contarPendientes();
     this.prestamos = this.data.getPrestamosActivos()
       .filter(p => p.frecuencia === this.frecuencia).slice(0, 5);
   }
@@ -132,5 +141,11 @@ export class DashboardPage implements OnInit, OnDestroy {
     }, 900);
   }
 
-  ir(r: string) { this.router.navigate([r]); }
+  ir(r: string) { this.router.navigateByUrl(r); }
+
+  abrirReportes(event: MouseEvent) {
+    (event.currentTarget as HTMLButtonElement | null)?.blur();
+    void this.navController.navigateForward('/reportes', { animated: false });
+  }
+
 }

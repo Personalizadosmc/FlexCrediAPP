@@ -24,8 +24,8 @@
     <div class="hero-card">
       <p class="hc-lbl">COBRADO EN EL PERIODO</p>
       <p class="hc-val">{{data.formatMoney(cobradoPeriodo)}}</p>
-      <p class="hc-sub" *ngIf="pagos.length>0">{{pagos.length}} pagos registrados en total</p>
-      <p class="hc-sub" *ngIf="pagos.length===0">Sin pagos registrados aún</p>
+      <p class="hc-sub" *ngIf="pagosPeriodo.length>0">{{pagosPeriodo.length}} pago(s) en el período seleccionado</p>
+      <p class="hc-sub" *ngIf="pagosPeriodo.length===0">Sin pagos registrados en este período</p>
     </div>
 
     <!-- KPI GRID -->
@@ -54,26 +54,37 @@
 
     <!-- GRAFICA BARRAS -->
     <div class="chart-card">
-      <p class="chart-title">Cobros por día (últimos 7 días)</p>
-      <div class="bars-wrap" *ngIf="pagos.length>0">
+      <div class="chart-heading">
+        <p class="chart-title">{{tituloGrafica}}</p>
+        <div class="chart-legend" aria-label="Frecuencia de los pagos">
+          <span><i class="blue"></i>Semanal</span>
+          <span><i class="gold"></i>Quincenal</span>
+          <span><i class="green"></i>Mensual</span>
+        </div>
+      </div>
+      <div class="bars-wrap" *ngIf="pagosPeriodo.length>0">
         <div class="bar-col" *ngFor="let b of barras">
-          <div class="bar" [style.height]="b.h+'px'" [class.gold]="b.gold"></div>
+          <div class="bar-stack" [attr.aria-label]="b.lbl + ': ' + data.formatMoney(b.total)">
+            <div class="bar-segment green" *ngIf="b.hMensual>0" [style.height.px]="b.hMensual"></div>
+            <div class="bar-segment gold" *ngIf="b.hQuincenal>0" [style.height.px]="b.hQuincenal"></div>
+            <div class="bar-segment blue" *ngIf="b.hSemanal>0" [style.height.px]="b.hSemanal"></div>
+          </div>
           <span class="bar-lbl">{{b.lbl}}</span>
         </div>
       </div>
-      <div class="chart-empty" *ngIf="pagos.length===0">
-        <p>Sin datos aún — registra pagos para ver estadísticas</p>
+      <div class="chart-empty" *ngIf="pagosPeriodo.length===0">
+        <p>No hay pagos en este período para representar en la gráfica</p>
       </div>
     </div>
 
     <!-- OPERACIONES RECIENTES -->
     <div class="ops-card">
-      <p class="ops-title">Últimas Operaciones</p>
-      <div class="op-empty" *ngIf="pagos.length===0">
+      <p class="ops-title">Últimas operaciones del período</p>
+      <div class="op-empty" *ngIf="pagosPeriodo.length===0">
         <ion-icon name="time-outline"></ion-icon>
         <p>Sin operaciones registradas</p>
       </div>
-      <div class="op-item" *ngFor="let p of pagos.slice(0,6)">
+      <div class="op-item" *ngFor="let p of pagosPeriodo.slice(0,6)">
         <div class="op-ico in"><ion-icon name="card-outline"></ion-icon></div>
         <div class="op-info">
           <p class="op-name">Pago · {{p.clienteNombre}}</p>

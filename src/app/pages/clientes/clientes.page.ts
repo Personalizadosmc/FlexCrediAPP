@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IonContent, IonIcon, IonInput, IonRippleEffect, AlertController, ToastController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { searchOutline, addOutline, arrowBackOutline, callOutline, trashOutline, createOutline, personOutline } from 'ionicons/icons';
+import { searchOutline, addOutline, arrowBackOutline, callOutline, trashOutline, createOutline, personOutline, receiptOutline } from 'ionicons/icons';
 import { DataService } from '../../services/data.service';
 import { Cliente } from '../../models';
 
@@ -22,7 +22,7 @@ export class ClientesPage implements OnInit {
 
   constructor(public data: DataService, private router: Router,
     private alert: AlertController, private toast: ToastController) {
-    addIcons({ searchOutline, addOutline, arrowBackOutline, callOutline, trashOutline, createOutline, personOutline });
+    addIcons({ searchOutline, addOutline, arrowBackOutline, callOutline, trashOutline, createOutline, personOutline, receiptOutline });
   }
 
   ngOnInit() { this.cargar(); }
@@ -60,6 +60,14 @@ export class ClientesPage implements OnInit {
       ]
     });
     al.present();
+  }
+
+  editar(c: Cliente) {
+    this.router.navigate(['/nuevo-cliente'], { queryParams: { id: c.id } });
+  }
+
+  historial(c: Cliente) {
+    this.router.navigate(['/historial-pagos'], { queryParams: { clienteId: c.id } });
   }
 
   ir(r:string){this.router.navigate([r])}

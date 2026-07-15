@@ -1,0 +1,284 @@
+<ion-content class="tar-content" [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content pullingIcon="chevron-down-circle-outline" refreshingSpinner="crescent"></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- HEADER -->
+  <div class="tar-header">
+    <div class="tar-topbar">
+      <button class="back-btn ion-activatable" (click)="ir('/dashboard')">
+        <ion-ripple-effect></ion-ripple-effect>
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <div>
+        <h2 class="tar-title">Tareas de Cobro</h2>
+        <p class="tar-sub">Agenda y recordatorios</p>
+      </div>
+      <button class="add-btn ion-activatable" (click)="abrirModalCrear()">
+        <ion-ripple-effect></ion-ripple-effect>
+        <ion-icon name="add-outline"></ion-icon>
+      </button>
+    </div>
+
+    <!-- KPIs -->
+    <div class="stats-row">
+      <div class="stat-chip"><span class="sc-n blue">{{stats.total}}</span><span class="sc-l">Total</span></div>
+      <div class="stat-chip"><span class="sc-n gold">{{stats.pendientes}}</span><span class="sc-l">Pendientes</span></div>
+      <div class="stat-chip"><span class="sc-n green">{{stats.completadas}}</span><span class="sc-l">Hechas</span></div>
+      <div class="stat-chip"><span class="sc-n red">{{stats.canceladas}}</span><span class="sc-l">Canceladas</span></div>
+    </div>
+  </div>
+
+  <div class="tar-body">
+    <div class="state-tabs">
+      <button [class.on]="vista==='pendiente'" (click)="setVista('pendiente')">
+        Pendientes <strong>{{stats.pendientes}}</strong>
+      </button>
+      <button [class.on]="vista==='completada'" (click)="setVista('completada')">
+        Completadas <strong>{{stats.completadas}}</strong>
+      </button>
+      <button [class.on]="vista==='cancelada'" (click)="setVista('cancelada')">
+        Canceladas <strong>{{stats.canceladas}}</strong>
+      </button>
+    </div>
+
+    <!-- HINT -->
+    <div class="hint-bar" *ngIf="tareasFiltradas.length > 0">
+      <ion-icon name="sparkles-outline"></ion-icon>
+      <span>Desliza ← para eliminar · Mantén presionado para editar</span>
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div class="empty-wrap" *ngIf="tareasFiltradas.length === 0">
+      <ion-icon name="list-outline"></ion-icon>
+      <p>No hay tareas en esta vista</p>
+      <button class="empty-btn ion-activatable" (click)="abrirModalCrear()">
+        <ion-ripple-effect></ion-ripple-effect>
+        + Crear tarea
+      </button>
+    </div>
+
+    <!-- LIST + REORDER + SLIDING -->
+    <ion-list *ngIf="tareasFiltradas.length > 0" lines="none" class="tar-list">
+      <ion-reorder-group [disabled]="vista !== 'pendiente'" (ionItemReorder)="onReorder($event)">
+
+        <ion-item-sliding *ngFor="let t of tareasFiltradas" #slide>
+          <ion-item class="tar-item"
+                    [class.completed]="estadoDe(t)==='completada'"
+                    [class.cancelled]="estadoDe(t)==='cancelada'"
+                    (mousedown)="onPressStart(t)"
+                    (mouseup)="onPressEnd()"
+                    (mouseleave)="onPressEnd()"
+                    (touchstart)="onPressStart(t)"
+                    (touchend)="onPressEnd()"
+                    (touchcancel)="onPressEnd()">
+
+            <ion-toggle slot="start"
+                        class="task-toggle"
+                        [checked]="estadoDe(t)==='completada'"
+                        (click)="$event.stopPropagation()"
+                        (ionChange)="toggle(t)"
+                        *ngIf="estadoDe(t)!=='cancelada'"
+                        aria-label="Completada">
+            </ion-toggle>
+
+            <!-- Contenido -->
+            <ion-label>
+              <div class="ti-head">
+                <div class="ti-tipo-ico" [style.background]="colorPrioridad(t.prioridad)+'22'"
+                                         [style.color]="colorPrioridad(t.prioridad)">
+                  <ion-icon [name]="iconoTipo(t.tipo)"></ion-icon>
+                </div>
+                <div class="ti-titulo-wrap">
+                  <p class="ti-titulo" [class.strike]="estadoDe(t)!=='pendiente'">{{t.titulo}}</p>
+                  <p class="ti-desc" *ngIf="t.descripcion">{{t.descripcion}}</p>
+                </div>
+                <ion-badge class="prio-badge"
+                           [style.background]="colorPrioridad(t.prioridad)+'22'"
+                           [style.color]="colorPrioridad(t.prioridad)">
+                  {{labelPrioridad(t.prioridad)}}
+                </ion-badge>
+              </div>
+              <div class="ti-meta">
+                <span *ngIf="t.clienteNombre" class="ti-cli">
+                  <ion-icon name="person-outline"></ion-icon>
+                  {{t.clienteNombre}}
+                </span>
+                <span *ngIf="!t.clienteNombre" class="ti-cli muted">
+                  <ion-icon name="person-outline"></ion-icon>
+                  Sin cliente asignado
+                </span>
+                <span *ngIf="t.fechaLimite" class="ti-fecha">
+                  <ion-icon name="time-outline"></ion-icon>
+                  {{t.fechaLimite | date:'dd MMM'}}
+                </span>
+              </div>
+              <div class="task-actions">
+                <button class="task-action done" *ngIf="estadoDe(t)==='pendiente'" (click)="completar(t, $event)">
+                  <ion-icon name="checkmark-outline"></ion-icon>
+                  Completar
+                </button>
+                <button class="task-action cancel" *ngIf="estadoDe(t)==='pendiente'" (click)="cancelar(t, $event)">
+                  <ion-icon name="close-outline"></ion-icon>
+                  Cancelar
+                </button>
+                <button class="task-action reopen" *ngIf="estadoDe(t)!=='pendiente'" (click)="reabrir(t, $event)">
+                  Reabrir
+                </button>
+              </div>
+            </ion-label>
+
+            <ion-reorder slot="end" *ngIf="vista === 'pendiente'"></ion-reorder>
+          </ion-item>
+
+          <!-- SWIPE OPTIONS -->
+          <ion-item-options side="end">
+            <ion-item-option color="warning" (click)="abrirModalEditar(t); slide.close()">
+              <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+            </ion-item-option>
+            <ion-item-option color="medium" *ngIf="estadoDe(t)==='pendiente'" (click)="cancelar(t, $event); slide.close()">
+              <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+            </ion-item-option>
+            <ion-item-option color="danger" (click)="eliminar(t, slide)">
+              <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+
+        </ion-item-sliding>
+
+      </ion-reorder-group>
+    </ion-list>
+
+    <!-- BOTÓN LIMPIAR -->
+    <button class="btn-clean ion-activatable" *ngIf="stats.completadas > 0"
+            (click)="limpiarCompletadas()">
+      <ion-ripple-effect></ion-ripple-effect>
+      <ion-icon name="trash-outline"></ion-icon>
+      Limpiar {{stats.completadas}} completadas
+    </button>
+
+    <div style="height:110px"></div>
+  </div>
+</ion-content>
+
+<!-- ══════════════════════════════════════════
+     MODAL CREAR / EDITAR TAREA
+══════════════════════════════════════════ -->
+<ion-modal [isOpen]="modalOpen" (didDismiss)="cerrarModal()" class="tar-modal">
+  <ng-template>
+    <div class="modal-inner">
+      <div class="mod-header">
+        <h3>{{ editando ? 'Editar tarea' : 'Nueva tarea' }}</h3>
+        <button class="mod-close" (click)="cerrarModal()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+
+      <div class="mod-body">
+        <!-- Título -->
+        <div class="field">
+          <label>TÍTULO *</label>
+          <div class="inp-box">
+            <ion-icon name="list-outline"></ion-icon>
+            <ion-input placeholder="Ej. Llamar a Juan por cobro" [(ngModel)]="form.titulo" class="fc-inp"></ion-input>
+          </div>
+        </div>
+
+        <!-- Descripción -->
+        <div class="field">
+          <label>DESCRIPCIÓN</label>
+          <div class="inp-box">
+            <ion-input placeholder="Notas adicionales" [(ngModel)]="form.descripcion" class="fc-inp"></ion-input>
+          </div>
+        </div>
+
+        <!-- Tipo -->
+        <div class="field">
+          <label>TIPO</label>
+          <div class="tipo-grid">
+            <button class="tipo-btn" [class.on]="form.tipo==='llamada'" (click)="form.tipo='llamada'">
+              <ion-icon name="call-outline"></ion-icon><span>Llamada</span>
+            </button>
+            <button class="tipo-btn" [class.on]="form.tipo==='visita'" (click)="form.tipo='visita'">
+              <ion-icon name="walk-outline"></ion-icon><span>Visita</span>
+            </button>
+            <button class="tipo-btn" [class.on]="form.tipo==='cobro'" (click)="form.tipo='cobro'">
+              <ion-icon name="cash-outline"></ion-icon><span>Cobro</span>
+            </button>
+            <button class="tipo-btn" [class.on]="form.tipo==='general'" (click)="form.tipo='general'">
+              <ion-icon name="ellipsis-horizontal-outline"></ion-icon><span>Otra</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Prioridad -->
+        <div class="field">
+          <label>PRIORIDAD</label>
+          <div class="prio-grid">
+            <button class="prio-btn baja"  [class.on]="form.prioridad==='baja'"  (click)="form.prioridad='baja'">Baja</button>
+            <button class="prio-btn media" [class.on]="form.prioridad==='media'" (click)="form.prioridad='media'">Media</button>
+            <button class="prio-btn alta"  [class.on]="form.prioridad==='alta'"  (click)="form.prioridad='alta'">Alta</button>
+          </div>
+        </div>
+
+        <!-- Cliente asignado -->
+        <div class="field client-field" *ngIf="clientes.length > 0">
+          <label>ASIGNAR CLIENTE A ESTA TAREA</label>
+          <div class="inp-box">
+            <ion-icon name="person-outline"></ion-icon>
+            <select class="native-select" [(ngModel)]="form.clienteId">
+              <option value="">Sin cliente</option>
+              <option *ngFor="let c of clientes" [value]="c.id">{{c.nombre}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="client-empty-note" *ngIf="clientes.length === 0">
+          Registra clientes primero para poder asignarlos a tus tareas.
+        </div>
+
+        <!-- Fecha límite -->
+        <div class="field">
+          <label>FECHA LÍMITE (opcional)</label>
+          <div class="inp-box date-box">
+            <ion-icon name="time-outline"></ion-icon>
+            <input type="date" [(ngModel)]="form.fechaLimite" class="native-date" />
+          </div>
+        </div>
+      </div>
+
+      <div class="mod-footer">
+        <button class="btn-cancelar" (click)="cerrarModal()">Cancelar</button>
+        <button class="btn-guardar ion-activatable" (click)="guardar()">
+          <ion-ripple-effect></ion-ripple-effect>
+          <ion-icon name="save-outline"></ion-icon>
+          {{ editando ? 'Actualizar' : 'Guardar' }}
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</ion-modal>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <div class="tab-item ion-activatable" (click)="ir('/dashboard')">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="home-outline"></ion-icon><span>Inicio</span>
+  </div>
+  <div class="tab-item on ion-activatable">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="list-outline"></ion-icon><span>Tareas</span>
+    <div class="t-dot"></div>
+  </div>
+  <div class="tab-item ion-activatable" (click)="ir('/novedades')">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="newspaper-outline"></ion-icon><span>Novedades</span>
+  </div>
+  <div class="tab-item ion-activatable" (click)="ir('/mapa')">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="map-outline"></ion-icon><span>Mapa</span>
+  </div>
+  <div class="tab-item ion-activatable" (click)="ir('/perfil')">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="person-outline"></ion-icon><span>Perfil</span>
+  </div>
+</div>

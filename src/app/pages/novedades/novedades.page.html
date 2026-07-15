@@ -1,0 +1,108 @@
+<ion-content class="nov-content" [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content pullingIcon="chevron-down-circle-outline" refreshingSpinner="crescent"></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- HEADER -->
+  <div class="nov-header">
+    <div class="nov-topbar">
+      <button class="back-btn ion-activatable" (click)="ir('/dashboard')">
+        <ion-ripple-effect></ion-ripple-effect>
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <div>
+        <h2 class="nov-title">Novedades</h2>
+        <p class="nov-sub">Tips y noticias financieras</p>
+      </div>
+      <button class="refresh-btn ion-activatable" (click)="reintentar()">
+        <ion-ripple-effect></ion-ripple-effect>
+        <ion-icon name="refresh-outline"></ion-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="nov-body">
+
+    <!-- ESTADO DE CARGA -->
+    <div class="loading-wrap" *ngIf="cargando && noticias.length === 0">
+      <ion-spinner name="crescent" color="warning"></ion-spinner>
+      <p>Consultando API...</p>
+    </div>
+
+    <!-- ESTADO DE ERROR -->
+    <div class="error-wrap" *ngIf="error && !cargando">
+      <ion-icon name="alert-circle-outline"></ion-icon>
+      <h3>Ups, hubo un problema</h3>
+      <p>{{ error }}</p>
+      <button class="btn-retry ion-activatable" (click)="reintentar()">
+        <ion-ripple-effect></ion-ripple-effect>
+        <ion-icon name="refresh-outline"></ion-icon>
+        Reintentar
+      </button>
+    </div>
+
+    <!-- LISTA DE NOTICIAS -->
+    <div class="news-list" *ngIf="noticias.length > 0">
+      <div class="news-status">
+        <span>{{ ultimaActualizacion ? ('Actualizado ' + (ultimaActualizacion | date:'HH:mm')) : 'Noticias listas' }}</span>
+      </div>
+      <div class="offline-note" *ngIf="usandoRespaldo">
+        <ion-icon name="alert-circle-outline"></ion-icon>
+        Sin conexión con la API. Mostrando noticias de respaldo.
+      </div>
+
+      <ion-card class="news-card" *ngFor="let n of noticias; let i=index"
+                [style.animation-delay]="(i*0.04)+'s'">
+
+        <div class="news-head">
+          <div class="cat-badge" [style.background]="colorCategoria(n.categoria) + '20'"
+                                 [style.color]="colorCategoria(n.categoria)">
+            <ion-icon [name]="n.icono"></ion-icon>
+            <span>{{ n.categoria }}</span>
+          </div>
+          <span class="news-date">
+            <ion-icon name="time-outline"></ion-icon>
+            {{ n.fecha | date:'dd MMM yyyy' }}
+          </span>
+        </div>
+
+        <ion-card-content class="news-body">
+          <h3 class="news-title">{{ n.title }}</h3>
+          <p class="news-text">{{ n.body }}</p>
+        </ion-card-content>
+
+        <div class="news-footer">
+          <span class="news-id">#{{ n.id }}</span>
+          <span class="news-source">FlexCredi Finanzas</span>
+        </div>
+      </ion-card>
+    </div>
+
+    <div style="height:100px"></div>
+  </div>
+</ion-content>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <div class="tab-item ion-activatable" (click)="ir('/dashboard')">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="home-outline"></ion-icon><span>Inicio</span>
+  </div>
+  <div class="tab-item ion-activatable" (click)="ir('/tareas')">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="list-outline"></ion-icon><span>Tareas</span>
+  </div>
+  <div class="tab-item on ion-activatable">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="newspaper-outline"></ion-icon><span>Novedades</span>
+    <div class="t-dot"></div>
+  </div>
+  <div class="tab-item ion-activatable" (click)="ir('/mapa')">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="map-outline"></ion-icon><span>Mapa</span>
+  </div>
+  <div class="tab-item ion-activatable" (click)="ir('/perfil')">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="person-outline"></ion-icon><span>Perfil</span>
+  </div>
+</div>

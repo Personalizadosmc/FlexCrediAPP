@@ -4,7 +4,7 @@
       <button class="back-btn ion-activatable" (click)="goBack()">
         <ion-ripple-effect></ion-ripple-effect><ion-icon name="arrow-back-outline"></ion-icon>
       </button>
-      <div><h2 class="nc-title">Nuevo Cliente</h2><p class="nc-sub">Registra los datos del cliente</p></div>
+      <div><h2 class="nc-title">{{ titulo }}</h2><p class="nc-sub">{{ subtitulo }}</p></div>
     </div>
   </div>
   <div class="nc-body">
@@ -16,12 +16,53 @@
       <div class="field"><label>CÉDULA / ID *</label>
         <div class="inp-box"><ion-icon name="card-outline"></ion-icon>
           <ion-input type="text" placeholder="001-0000000-0" [(ngModel)]="cedula" class="fc-inp"></ion-input></div></div>
-      <div class="field"><label>TELÉFONO *</label>
+      <div class="field"><label>TELÉFONO / WHATSAPP *</label>
         <div class="inp-box"><ion-icon name="call-outline"></ion-icon>
           <ion-input type="tel" placeholder="809-000-0000" [(ngModel)]="telefono" class="fc-inp"></ion-input></div></div>
+
+      <!-- Correo electrónico -->
+      <div class="field">
+        <label>CORREO ELECTRÓNICO <span class="opt-lbl">(Para notificaciones de pago)</span></label>
+        <div class="inp-box email-box">
+          <ion-icon name="mail-outline"></ion-icon>
+          <ion-input type="email" placeholder="cliente@correo.com" [(ngModel)]="email" class="fc-inp"></ion-input>
+        </div>
+        <p class="field-hint">📧 Se usará para enviar confirmaciones automáticas al registrar un pago</p>
+      </div>
+
       <div class="field"><label>DIRECCIÓN (Opcional)</label>
         <div class="inp-box"><ion-icon name="location-outline"></ion-icon>
           <ion-input type="text" placeholder="Calle, sector, ciudad" [(ngModel)]="direccion" class="fc-inp"></ion-input></div></div>
+
+      <div class="doc-card">
+        <div class="doc-head">
+          <ion-icon name="card-outline"></ion-icon>
+          <div>
+            <strong>Foto de cedula / documento</strong>
+            <span>Opcional para validar identidad</span>
+          </div>
+        </div>
+
+        <div class="doc-preview" *ngIf="fotoDocumento">
+          <img [src]="fotoDocumento" alt="Documento del cliente" />
+          <button class="doc-trash" (click)="eliminarFotoDocumento()">
+            <ion-icon name="trash-outline"></ion-icon>
+          </button>
+        </div>
+
+        <div class="doc-actions" *ngIf="!fotoDocumento">
+          <button class="doc-btn camera ion-activatable" (click)="tomarFotoDocumento()">
+            <ion-ripple-effect></ion-ripple-effect>
+            <ion-icon name="camera-outline"></ion-icon>
+            Tomar foto
+          </button>
+          <button class="doc-btn gallery ion-activatable" (click)="elegirFotoDocumento()">
+            <ion-ripple-effect></ion-ripple-effect>
+            <ion-icon name="image-outline"></ion-icon>
+            Adjuntar
+          </button>
+        </div>
+      </div>
     </div>
     <div style="height:90px"></div>
   </div>
@@ -29,6 +70,6 @@
 <div class="nc-footer">
   <button class="btn-save ion-activatable" (click)="guardar()">
     <ion-ripple-effect></ion-ripple-effect>
-    <ion-icon name="checkmark-circle-outline"></ion-icon> Guardar Cliente
+    <ion-icon name="checkmark-circle-outline"></ion-icon> {{ editandoId ? 'Actualizar Cliente' : 'Guardar Cliente' }}
   </button>
 </div>

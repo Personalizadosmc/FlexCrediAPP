@@ -1,0 +1,145 @@
+/* ═══════════════════════════════════════════════
+   NOVEDADES Y NOTICIAS FINANCIERAS
+═══════════════════════════════════════════════ */
+:host { --page-bg: #f4f6fb; }
+
+.nov-content { --background: var(--page-bg); }
+
+/* HEADER */
+.nov-header {
+  background: linear-gradient(135deg, #0d2252 0%, #1a3574 100%);
+  padding: 48px 16px 24px;
+  border-radius: 0 0 24px 24px;
+  color: white;
+  position: relative;
+  z-index: 2;
+}
+
+ion-refresher { z-index: 1; pointer-events: none; }
+.nov-topbar { display: flex; align-items: center; gap: 12px; }
+.nov-topbar > div { flex: 1; }
+.nov-title { margin: 0; font-size: 22px; font-weight: 800; }
+.nov-sub   { margin: 2px 0 0; font-size: 13px; opacity: 0.8; }
+
+.back-btn, .refresh-btn {
+  width: 40px; height: 40px; border-radius: 12px; border: none;
+  background: rgba(255,255,255,0.12); color: white;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden; cursor: pointer;
+}
+
+.nov-body { padding: 16px; }
+
+/* LOADING */
+.loading-wrap {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 80px 16px; gap: 14px;
+  pointer-events: none;
+  ion-spinner { --color: #f59e0b; width: 44px; height: 44px; }
+  p { margin: 0; color: #64748b; font-size: 14px; font-weight: 600; }
+}
+
+/* ERROR */
+.error-wrap {
+  text-align: center; padding: 60px 24px;
+  ion-icon { font-size: 60px; color: #ef4444; margin-bottom: 12px; }
+  h3 { margin: 0 0 6px; color: #0d2252; }
+  p  { margin: 0 0 20px; color: #64748b; font-size: 14px; }
+}
+
+.offline-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #fff7ed;
+  color: #9a3412;
+  font-size: 12px;
+  font-weight: 700;
+}
+.btn-retry {
+  background: #0d2252; color: white; border: none;
+  padding: 12px 24px; border-radius: 14px;
+  font-weight: 700; font-size: 14px;
+  display: inline-flex; align-items: center; gap: 8px;
+  cursor: pointer; position: relative; overflow: hidden;
+  ion-icon { font-size: 18px; }
+}
+
+/* NEWS LIST */
+.news-list { display: flex; flex-direction: column; gap: 14px; }
+.news-status {
+  min-height: 28px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2px;
+  color: #64748b; font-size: 12px; font-weight: 800;
+  ion-spinner { width: 22px; height: 22px; }
+}
+.news-card {
+  border-radius: 18px !important;
+  margin: 0 !important;
+  box-shadow: 0 4px 14px rgba(13,34,82,0.08) !important;
+  animation: fadeUp .35s ease both;
+  overflow: hidden;
+}
+
+.news-head {
+  padding: 14px 16px 6px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.cat-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.3px;
+  ion-icon { font-size: 13px; }
+}
+.news-date {
+  color: #94a3b8; font-size: 11px; font-weight: 600;
+  display: inline-flex; align-items: center; gap: 4px;
+  ion-icon { font-size: 12px; }
+}
+
+.news-body { padding: 6px 16px 12px !important; }
+.news-title {
+  margin: 6px 0 8px; font-size: 15px; font-weight: 800; color: #0d2252;
+  line-height: 1.35; text-transform: capitalize;
+}
+.news-text {
+  margin: 0; font-size: 13px; color: #475569;
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+.news-footer {
+  padding: 10px 16px;
+  border-top: 1px solid #f1f5f9;
+  display: flex; justify-content: space-between; align-items: center;
+  background: #fafbff;
+  .news-id     { font-size: 11px; color: #94a3b8; font-weight: 700; }
+  .news-source { font-size: 10px; color: #64748b; }
+}
+
+/* TAB BAR */
+.tab-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; height: 66px;
+  background: white; border-top: 1px solid #e2e8f0;
+  display: flex; align-items: center; justify-content: space-around;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.05); z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.tab-item {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  gap: 3px; color: #94a3b8; position: relative; padding: 8px 0;
+  cursor: pointer; overflow: hidden;
+  ion-icon { font-size: 22px; }
+  span { font-size: 10px; font-weight: 700; }
+  &.on { color: #0d2252; }
+  .t-dot {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: #f59e0b; position: absolute; bottom: 4px;
+  }
+}

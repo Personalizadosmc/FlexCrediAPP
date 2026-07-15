@@ -283,3 +283,198 @@
     box-shadow: none;
   }
 }
+
+/* ── Botón recordatorio WhatsApp en cada tarjeta ──────── */
+.wa-remind-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border-radius: 50%;
+  background: #25d366;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(37,211,102,0.4);
+  overflow: hidden;
+  z-index: 5;
+  transition: transform 0.15s, box-shadow 0.15s;
+
+  ion-icon {
+    display: block;
+    margin: auto;
+    color: #fff;
+    font-size: 23px;
+  }
+
+  &:active {
+    transform: scale(0.92);
+    box-shadow: 0 1px 4px rgba(37,211,102,0.3);
+  }
+}
+
+/* Dar espacio al botón de WA en las cards */
+.client-card {
+  position: relative;
+  padding-bottom: 14px;
+}
+
+/* ── Barra estado de email en la factura ─────────────── */
+.email-status-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  margin: 0 16px 4px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+
+  &:has(.ok) {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+  }
+  &:has(.err) {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+  }
+
+  .es-ico {
+    font-size: 16px;
+    flex-shrink: 0;
+    &.ok  { color: #059669; }
+    &.err { color: #d97706; }
+  }
+  .es-txt {
+    &.ok  { color: #065f46; }
+    &.err { color: #92400e; }
+  }
+}
+
+/* ── Botón WhatsApp en acciones de factura ───────────── */
+.fact-btn.wa-btn {
+  background: #25d366;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
+
+  ion-icon { color: #fff; }
+
+  &:active {
+    background: #1eb358;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   FOTO DE COMPROBANTE Y ESCÁNER QR
+═══════════════════════════════════════════════ */
+.qr-btn { background: #f59e0b !important; }
+.qr-btn ion-icon { color: white; }
+
+.comp-card {
+  background: white;
+  border-radius: 16px;
+  padding: 14px;
+  margin: 12px 0;
+  box-shadow: 0 4px 12px rgba(13,34,82,0.06);
+  border: 2px dashed #cbd5e1;
+}
+.cc-head {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 700; color: #64748b;
+  margin-bottom: 10px;
+  ion-icon { color: #f59e0b; font-size: 18px; }
+}
+.cc-preview {
+  position: relative;
+  img {
+    width: 100%; max-height: 200px;
+    object-fit: cover; border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+}
+.cc-del {
+  position: absolute; top: 8px; right: 8px;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: #dc2626; color: white; border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  ion-icon { font-size: 18px; }
+}
+.cc-btn {
+  width: 100%; background: linear-gradient(135deg, #0d2252 0%, #1a3574 100%);
+  color: white; border: none; padding: 14px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  font-weight: 700; font-size: 14px; cursor: pointer;
+  position: relative; overflow: hidden;
+  ion-icon { font-size: 22px; }
+}
+
+/* MODAL QR */
+.qr-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,0.85); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+.qr-modal {
+  width: 100%; max-width: 420px;
+  background: #0d2252; border-radius: 20px;
+  overflow: hidden; color: white;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+.qr-head {
+  padding: 18px 20px;
+  background: linear-gradient(135deg, #0d2252 0%, #1a3574 100%);
+  display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  ion-icon:first-child { font-size: 22px; color: #fcd34d; }
+  h3 { flex: 1; margin: 0; font-size: 16px; font-weight: 800; }
+}
+.qr-close {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: rgba(255,255,255,0.15); color: white; border: none;
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  ion-icon { font-size: 20px; }
+}
+.qr-body { padding: 20px; }
+.qr-video-wrap {
+  position: relative; width: 100%; aspect-ratio: 1;
+  border-radius: 16px; overflow: hidden;
+  background: #000;
+  video { width: 100%; height: 100%; object-fit: cover; }
+}
+.qr-frame {
+  position: absolute; inset: 15%;
+  border: none; pointer-events: none;
+}
+.qf-corner {
+  position: absolute; width: 32px; height: 32px;
+  border-color: #fcd34d; border-style: solid; border-width: 0;
+  &.tl { top: 0; left: 0; border-top-width: 4px; border-left-width: 4px; border-top-left-radius: 8px; }
+  &.tr { top: 0; right: 0; border-top-width: 4px; border-right-width: 4px; border-top-right-radius: 8px; }
+  &.bl { bottom: 0; left: 0; border-bottom-width: 4px; border-left-width: 4px; border-bottom-left-radius: 8px; }
+  &.br { bottom: 0; right: 0; border-bottom-width: 4px; border-right-width: 4px; border-bottom-right-radius: 8px; }
+}
+.qr-msg {
+  margin: 14px 0 0; text-align: center;
+  font-size: 13px; opacity: 0.9;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  ion-icon { font-size: 16px; color: #fcd34d; }
+}
+
+.fact-btn.nfc-btn {
+  background: linear-gradient(135deg, #0f766e, #14b8a6);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(20, 184, 166, 0.35);
+
+  ion-icon { color: #fff; }
+
+  &:active {
+    background: #0f766e;
+  }
+}

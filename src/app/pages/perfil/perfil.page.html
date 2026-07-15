@@ -1,0 +1,455 @@
+<ion-content class="pr-content" [fullscreen]="true">
+
+  <!-- HEADER + AVATAR -->
+  <div class="pr-header">
+    <button class="back-btn ion-activatable" (click)="ir('/dashboard')">
+      <ion-ripple-effect></ion-ripple-effect>
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </button>
+
+    <div class="avatar-wrap" (click)="cambiarFoto()">
+      <img *ngIf="fotoPerfil" [src]="fotoPerfil" class="avatar-img" alt="Perfil"/>
+      <div *ngIf="!fotoPerfil" class="avatar-placeholder">
+        <ion-icon name="person-outline"></ion-icon>
+      </div>
+      <div class="avatar-edit">
+        <ion-icon name="camera-outline"></ion-icon>
+      </div>
+    </div>
+
+    <h2 class="pr-nombre">{{ usuario.nombre || 'Usuario' }}</h2>
+    <p class="pr-email">📧 {{ usuario.email }}</p>
+    <div class="pr-empresa" (click)="abrirEditarEmpresa()">
+      <ion-icon name="business-outline"></ion-icon>
+      <span>{{ usuario.nombreEmpresa }}</span>
+      <ion-icon name="create-outline" class="edit-ico"></ion-icon>
+    </div>
+  </div>
+
+  <div class="pr-body">
+
+    <!-- ═══════ CARD: DATOS ═══════ -->
+    <ion-card class="pr-card">
+      <ion-card-content>
+        <div class="card-title">
+          <ion-icon name="person-outline"></ion-icon>
+          <span>Información del prestamista</span>
+          <button class="mini-edit ion-activatable" (click)="abrirEditarPerfil()">
+            <ion-ripple-effect></ion-ripple-effect>
+            <ion-icon name="create-outline"></ion-icon>
+            Editar
+          </button>
+        </div>
+        <div class="info-row">
+          <span class="ir-label">Nombre</span>
+          <span class="ir-value">{{ usuario.nombre }}</span>
+        </div>
+        <div class="info-row">
+          <span class="ir-label">Empresa</span>
+          <span class="ir-value">{{ usuario.nombreEmpresa }}</span>
+        </div>
+        <div class="info-row">
+          <span class="ir-label">Correo</span>
+          <span class="ir-value">{{ usuario.email }}</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-pill">
+            <span>Teléfono</span>
+            <strong>{{ usuario.telefono || 'No registrado' }}</strong>
+          </div>
+          <div class="info-pill">
+            <span>Documento</span>
+            <strong>{{ usuario.documento || 'No registrado' }}</strong>
+          </div>
+          <div class="info-pill">
+            <span>Profesión</span>
+            <strong>{{ usuario.profesion || usuario.carrera || 'Prestamista' }}</strong>
+          </div>
+          <div class="info-pill">
+            <span>Estado civil</span>
+            <strong>{{ usuario.estadoCivil || 'No registrado' }}</strong>
+          </div>
+          <div class="info-pill">
+            <span>Nacimiento</span>
+            <strong>{{ usuario.fechaNacimiento || 'No registrado' }}</strong>
+          </div>
+          <div class="info-pill">
+            <span>Direccion</span>
+            <strong>{{ usuario.direccion || 'No registrada' }}</strong>
+          </div>
+        </div>
+        <div class="info-row" *ngIf="usuario.fechaRegistro">
+          <span class="ir-label">Miembro desde</span>
+          <span class="ir-value">{{ usuario.fechaRegistro | date:'dd MMM yyyy' }}</span>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="pr-card">
+      <ion-card-content>
+        <div class="card-title">
+          <ion-icon name="image-outline"></ion-icon>
+          <span>Logo de facturas</span>
+        </div>
+        <div class="logo-panel">
+          <div class="logo-preview" [class.empty]="!logoEmpresa">
+            <img *ngIf="logoEmpresa" [src]="logoEmpresa" alt="Logo de facturas"/>
+            <div *ngIf="!logoEmpresa" class="logo-placeholder">
+              <ion-icon name="business-outline"></ion-icon>
+              <span>Sin logo</span>
+            </div>
+          </div>
+          <div class="logo-info">
+            <h3>{{ usuario.nombreEmpresa || 'FlexCredi' }}</h3>
+            <p>Este logo se usará en los recibos y facturas generadas por la app.</p>
+            <button class="logo-btn ion-activatable" (click)="cambiarLogoEmpresa()">
+              <ion-ripple-effect></ion-ripple-effect>
+              <ion-icon name="image-outline"></ion-icon>
+              {{ logoEmpresa ? 'Cambiar logo' : 'Adjuntar logo' }}
+            </button>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- ═══════ CARD: CONFIGURACIONES CON ion-toggle ═══════ -->
+    <ion-card class="pr-card">
+      <ion-card-content>
+        <div class="card-title">
+          <ion-icon name="notifications-outline"></ion-icon>
+          <span>Configuración</span>
+        </div>
+
+        <ion-list lines="none" class="cfg-list">
+          <ion-item>
+            <ion-icon name="moon-outline" slot="start" color="medium"></ion-icon>
+            <ion-label>
+              <h3>Modo oscuro</h3>
+              <p>Tema visual de la app</p>
+            </ion-label>
+            <button slot="end" class="pro-switch" [class.on]="config.temaOscuro" (click)="setConfig('temaOscuro')">
+              <span class="sw-text off">OFF</span><span class="sw-knob"></span><span class="sw-text on">ON</span>
+            </button>
+          </ion-item>
+
+          <ion-item>
+            <ion-icon name="notifications-outline" slot="start" color="medium"></ion-icon>
+            <ion-label>
+              <h3>Notificaciones</h3>
+              <p>Alertas de cobros y pagos</p>
+            </ion-label>
+            <button slot="end" class="pro-switch" [class.on]="config.notificaciones" (click)="setConfig('notificaciones')">
+              <span class="sw-text off">OFF</span><span class="sw-knob"></span><span class="sw-text on">ON</span>
+            </button>
+          </ion-item>
+
+          <ion-item>
+            <ion-icon name="volume-high-outline" slot="start" color="medium"></ion-icon>
+            <ion-label>
+              <h3>Sonidos</h3>
+              <p>Efectos de sonido en la app</p>
+            </ion-label>
+            <button slot="end" class="pro-switch" [class.on]="config.sonidos" (click)="setConfig('sonidos')">
+              <span class="sw-text off">OFF</span><span class="sw-knob"></span><span class="sw-text on">ON</span>
+            </button>
+          </ion-item>
+
+          <ion-item>
+            <ion-icon name="sync-outline" slot="start" color="medium"></ion-icon>
+            <ion-label>
+              <h3>Sincronizar automáticamente</h3>
+              <p>Al recuperar conexión</p>
+            </ion-label>
+            <button slot="end" class="pro-switch" [class.on]="config.autoSincronizar" (click)="setConfig('autoSincronizar')">
+              <span class="sw-text off">OFF</span><span class="sw-knob"></span><span class="sw-text on">ON</span>
+            </button>
+          </ion-item>
+
+          <ion-item>
+            <ion-icon name="phone-portrait-outline" slot="start" color="medium"></ion-icon>
+            <ion-label>
+              <h3>Vibración</h3>
+              <p>Feedback háptico en acciones</p>
+            </ion-label>
+            <button slot="end" class="pro-switch" [class.on]="config.vibracion" (click)="setConfig('vibracion')">
+              <span class="sw-text off">OFF</span><span class="sw-knob"></span><span class="sw-text on">ON</span>
+            </button>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- ═══════ CARD: COMPARTIR (NFC + BLE) ═══════ -->
+    <ion-card class="pr-card">
+      <ion-card-content>
+        <div class="card-title">
+          <ion-icon name="share-social-outline"></ion-icon>
+          <span>Compartir y conectar</span>
+        </div>
+
+        <div class="share-grid">
+          <button class="share-btn nfc ion-activatable" (click)="compartirPorNfc()" [disabled]="compartiendoNfc">
+            <ion-ripple-effect></ion-ripple-effect>
+            <ion-icon name="radio-outline"></ion-icon>
+            <span>{{ compartiendoNfc ? 'Escribiendo...' : 'Escribir NFC' }}</span>
+            <p>{{ compartiendoNfc ? 'Acerca el tag' : 'Guardar perfil en tag' }}</p>
+          </button>
+
+          <button class="share-btn nfc read ion-activatable" (click)="leerNfc()">
+            <ion-ripple-effect></ion-ripple-effect>
+            <ion-icon name="scan-outline"></ion-icon>
+            <span>Leer NFC</span>
+            <p>Leer tag compatible</p>
+          </button>
+
+          <button class="share-btn ble ion-activatable" (click)="abrirBluetooth()">
+            <ion-icon name="bluetooth-outline"></ion-icon>
+            <span>Escanear BLE</span>
+            <p>Dispositivos reales cercanos</p>
+          </button>
+        </div>
+
+        <div class="device-support">
+          <div>
+            <ion-icon name="radio-outline"></ion-icon>
+            <span>{{ estadoNfc() }}</span>
+          </div>
+          <div>
+            <ion-icon name="bluetooth-outline"></ion-icon>
+            <span>{{ estadoBle() }}</span>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Podcasts -->
+    <ion-card class="pr-card link-card" (click)="ir('/podcasts')">
+      <ion-card-content>
+        <div class="lc-inner">
+          <div class="lc-ico gold"><ion-icon name="scan-outline"></ion-icon></div>
+          <div class="lc-txt">
+            <p class="lc-title">Podcasts financieros 🎧</p>
+            <p class="lc-sub">Escucha episodios educativos</p>
+          </div>
+          <ion-icon name="chevron-forward-outline" class="lc-arrow"></ion-icon>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- ═══════ CARD: HISTORIAL DE COMPARTIDOS ═══════ -->
+    <ion-card class="pr-card">
+      <ion-card-content>
+        <div class="card-title">
+          <ion-icon name="time-outline"></ion-icon>
+          <span>Historial de compartidos</span>
+          <ion-badge color="medium">{{ compartidos.length }}</ion-badge>
+        </div>
+
+        <div class="empty-hist" *ngIf="compartidos.length === 0">
+          <ion-icon name="information-circle-outline"></ion-icon>
+          <p>Aún no has compartido nada</p>
+        </div>
+
+        <ion-list lines="none" class="hist-list" *ngIf="compartidos.length > 0">
+          <ion-item *ngFor="let c of compartidos.slice(0, 8)" class="hist-item">
+            <div class="hi-ico" slot="start"
+                 [style.background]="colorCompartido(c.tipo)+'22'"
+                 [style.color]="colorCompartido(c.tipo)">
+              <ion-icon [name]="iconoCompartido(c.tipo)"></ion-icon>
+            </div>
+            <ion-label>
+              <h3>{{ c.destino }}</h3>
+              <p>{{ c.contenido }}</p>
+              <p class="hi-time">{{ c.fecha | date:'dd MMM · HH:mm' }}</p>
+            </ion-label>
+            <ion-icon [name]="c.exito ? 'checkmark-outline' : 'alert-circle-outline'"
+                      slot="end"
+                      [color]="c.exito ? 'success' : 'danger'"></ion-icon>
+          </ion-item>
+        </ion-list>
+
+        <button class="btn-clean ion-activatable"
+                *ngIf="compartidos.length > 0" (click)="limpiarHistorial()">
+          <ion-ripple-effect></ion-ripple-effect>
+          <ion-icon name="trash-outline"></ion-icon>
+          Limpiar historial
+        </button>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- LOGOUT -->
+    <button class="btn-logout ion-activatable" (click)="logout()">
+      <ion-ripple-effect></ion-ripple-effect>
+      <ion-icon name="log-out-outline"></ion-icon>
+      Cerrar sesión
+    </button>
+
+    <p class="version-tag">FlexCredi APP v1.0</p>
+    <div style="height:100px"></div>
+  </div>
+</ion-content>
+
+<!-- ══════════════════════════════════════════
+     MODAL BLUETOOTH
+══════════════════════════════════════════ -->
+<ion-modal [isOpen]="bleModalOpen" (didDismiss)="cerrarBluetooth()" class="ble-modal">
+  <ng-template>
+    <div class="modal-inner">
+      <div class="mod-header">
+        <ion-icon name="bluetooth-outline"></ion-icon>
+        <h3>Dispositivos Bluetooth</h3>
+        <button class="mod-close" (click)="cerrarBluetooth()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+
+      <div class="mod-body">
+        <button class="scan-btn ion-activatable" (click)="escanearBle()" [disabled]="escaneandoBle">
+          <ion-spinner *ngIf="escaneandoBle" name="crescent" color="light"></ion-spinner>
+          <ion-icon *ngIf="!escaneandoBle" name="scan-outline"></ion-icon>
+          {{ escaneandoBle ? 'Escaneando...' : 'Escanear de nuevo' }}
+        </button>
+
+        <ion-list lines="none" *ngIf="dispositivosBle.length > 0" class="ble-list">
+          <ion-item *ngFor="let d of dispositivosBle" class="ble-item">
+            <ion-icon name="bluetooth-outline" slot="start"
+                      [color]="d.conectado ? 'success' : 'primary'"></ion-icon>
+            <ion-label>
+              <h3>{{ d.nombre }}</h3>
+              <p>Señal: {{ nivelSenal(d.rssi) }} {{ d.rssi ? '(' + d.rssi + ' dBm)' : '' }}</p>
+            </ion-label>
+            <button class="ble-conn" slot="end"
+                    [class.conn]="d.conectado"
+                    (click)="conectarBle(d)"
+                    [disabled]="d.conectado">
+              {{ d.conectado ? '✓ Conectado' : 'Conectar' }}
+            </button>
+          </ion-item>
+        </ion-list>
+
+        <div class="ble-empty" *ngIf="!escaneandoBle && dispositivosBle.length === 0">
+          <ion-icon name="bluetooth-outline"></ion-icon>
+          <p>No hay dispositivos disponibles</p>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</ion-modal>
+
+<!-- ══════════════════════════════════════════
+     MODAL EDITAR EMPRESA
+══════════════════════════════════════════ -->
+<ion-modal [isOpen]="editarNombreOpen" (didDismiss)="cerrarEditarEmpresa()" class="edit-modal">
+  <ng-template>
+    <div class="modal-inner small">
+      <div class="mod-header">
+        <ion-icon name="business-outline"></ion-icon>
+        <h3>Nombre de empresa</h3>
+        <button class="mod-close" (click)="cerrarEditarEmpresa()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+      <div class="mod-body">
+        <div class="field">
+          <label>NUEVO NOMBRE</label>
+          <div class="inp-box">
+            <ion-icon name="business-outline"></ion-icon>
+            <ion-input [(ngModel)]="nombreEmpresaTemp" class="fc-inp" placeholder="Mi Empresa S.A."></ion-input>
+          </div>
+        </div>
+        <button class="btn-guardar-mod ion-activatable" (click)="guardarNombreEmpresa()">
+          <ion-ripple-effect></ion-ripple-effect>
+          <ion-icon name="checkmark-outline"></ion-icon> Guardar
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</ion-modal>
+
+<!-- MODAL EDITAR PERFIL -->
+<ion-modal [isOpen]="editarPerfilOpen" (didDismiss)="cerrarEditarPerfil()" class="edit-modal">
+  <ng-template>
+    <div class="modal-inner">
+      <div class="mod-header">
+        <ion-icon name="person-outline"></ion-icon>
+        <h3>Perfil profesional</h3>
+        <button class="mod-close" (click)="cerrarEditarPerfil()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+      <div class="mod-body profile-form">
+        <div class="field">
+          <label>NOMBRE COMPLETO</label>
+          <div class="inp-box"><ion-icon name="person-outline"></ion-icon>
+            <ion-input [(ngModel)]="perfilForm.nombre" class="fc-inp" placeholder="Nombre y apellido"></ion-input>
+          </div>
+        </div>
+        <div class="field">
+          <label>TELEFONO</label>
+          <div class="inp-box"><ion-icon name="phone-portrait-outline"></ion-icon>
+            <ion-input type="tel" [(ngModel)]="perfilForm.telefono" class="fc-inp" placeholder="809-000-0000"></ion-input>
+          </div>
+        </div>
+        <div class="field">
+          <label>CEDULA / DOCUMENTO</label>
+          <div class="inp-box"><ion-icon name="card-outline"></ion-icon>
+            <ion-input [(ngModel)]="perfilForm.documento" class="fc-inp" placeholder="001-0000000-0"></ion-input>
+          </div>
+        </div>
+        <div class="field">
+          <label>FECHA DE NACIMIENTO</label>
+          <div class="inp-box"><ion-icon name="time-outline"></ion-icon>
+            <ion-input type="date" [(ngModel)]="perfilForm.fechaNacimiento" class="fc-inp"></ion-input>
+          </div>
+        </div>
+        <div class="field">
+          <label>PROFESION / CARGO</label>
+          <div class="inp-box"><ion-icon name="business-outline"></ion-icon>
+            <ion-input [(ngModel)]="perfilForm.profesion" class="fc-inp" placeholder="Asesor financiero"></ion-input>
+          </div>
+        </div>
+        <div class="field">
+          <label>ESTADO CIVIL</label>
+          <div class="inp-box"><ion-icon name="information-circle-outline"></ion-icon>
+            <ion-input [(ngModel)]="perfilForm.estadoCivil" class="fc-inp" placeholder="Soltero, casado..."></ion-input>
+          </div>
+        </div>
+        <div class="field">
+          <label>DIRECCION</label>
+          <div class="inp-box"><ion-icon name="home-outline"></ion-icon>
+            <ion-input [(ngModel)]="perfilForm.direccion" class="fc-inp" placeholder="Sector, ciudad"></ion-input>
+          </div>
+        </div>
+        <button class="btn-guardar-mod ion-activatable" (click)="guardarPerfil()">
+          <ion-ripple-effect></ion-ripple-effect>
+          <ion-icon name="checkmark-outline"></ion-icon> Guardar perfil
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</ion-modal>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <div class="tab-item ion-activatable" (click)="ir('/dashboard')">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="home-outline"></ion-icon><span>Inicio</span>
+  </div>
+  <div class="tab-item ion-activatable" (click)="ir('/tareas')">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="list-outline"></ion-icon><span>Tareas</span>
+  </div>
+  <div class="tab-item ion-activatable" (click)="ir('/novedades')">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="newspaper-outline"></ion-icon><span>Novedades</span>
+  </div>
+  <div class="tab-item ion-activatable" (click)="ir('/mapa')">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="map-outline"></ion-icon><span>Mapa</span>
+  </div>
+  <div class="tab-item on ion-activatable">
+    <ion-ripple-effect></ion-ripple-effect>
+    <ion-icon name="person-outline"></ion-icon><span>Perfil</span>
+    <div class="t-dot"></div>
+  </div>
+</div>

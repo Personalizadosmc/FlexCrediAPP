@@ -146,6 +146,7 @@ export class NuevoPrestamoPage implements OnInit {
       clienteId: this.clienteSel.id,
       clienteNombre: this.clienteSel.nombre,
       clienteTelefono: this.clienteSel.telefono,
+      clienteEmail: this.clienteSel.email || '',
       monto: +monto, interes: +interes, frecuencia: this.frecuencia,
       numeroCuotas: +numeroCuotas, cuotaMonto: this.resumen.cuotaMonto,
       totalPagar: this.resumen.totalPagar,
